@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DSDD + HRDD Integration</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Georgia&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --um-navy: #000933;
+            --um-gold: #A9955C;
+            --um-coral: #EA7C69;
+            --um-white: #FFFFFF;
+        }
+        body {
+            font-family: 'Open Sans', sans-serif;
+            background: var(--um-navy);
+            color: var(--um-white);
+            overflow: hidden;
+        }
+        .slide {
+            display: none;
+            min-height: 100vh;
+            padding: 60px 80px;
+            animation: fadeIn 0.5s ease;
+        }
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        h1 {
+            font-family: Georgia, serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: var(--um-gold);
+        }
+        h2 {
+            font-family: Georgia, serif;
+            font-size: 2.6rem;
+            font-weight: 600;
+            margin-bottom: 40px;
+            color: var(--um-white);
+        }
+        h3 { font-family: Georgia, serif; }
+        .subtitle {
+            font-size: 1.8rem;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 60px;
+        }
+        p, li {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+        }
+        ul { list-style: none; margin-left: 20px; }
+        li {
+            margin-bottom: 20px;
+            padding-left: 40px;
+            position: relative;
+        }
+        li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--um-gold);
+        }
+        .highlight { color: var(--um-gold); font-weight: 600; }
+        .warning { color: var(--um-coral); }
+        .success { color: #10b981; }
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 40px;
+        }
+        .comparison-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid rgba(169, 149, 92, 0.3);
+        }
+        .comparison-box h3 {
+            font-size: 1.8rem;
+            margin-bottom: 30px;
+        }
+        .comparison-box.good h3 { color: #10b981; }
+        .comparison-box.bad h3 { color: var(--um-coral); }
+        .quote {
+            font-family: Georgia, serif;
+            font-size: 1.8rem;
+            font-style: italic;
+            color: var(--um-white);
+            border-left: 4px solid var(--um-gold);
+            padding-left: 30px;
+            margin: 40px 0;
+        }
+        .cite {
+            font-size: 1.1rem;
+            color: var(--um-gold);
+            margin-top: 10px;
+        }
+        .brain-box {
+            background: rgba(169, 149, 92, 0.1);
+            border: 2px solid var(--um-gold);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 30px 0;
+            text-align: center;
+        }
+        .brain-box h3 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: var(--um-gold);
+        }
+        .result-list li::before { content: "✗"; color: var(--um-coral); }
+        .action-list li::before { content: "✓"; color: #10b981; }
+        .slide-number {
+            position: fixed;
+            bottom: 30px;
+            right: 40px;
+            font-size: 1rem;
+            color: rgba(255,255,255,0.4);
+        }
+        .logo {
+            position: fixed;
+            top: 30px;
+            right: 40px;
+            font-family: Georgia, serif;
+            font-size: 1.1rem;
+            color: var(--um-gold);
+            letter-spacing: 1px;
+        }
+        .nav-hint {
+            position: fixed;
+            bottom: 30px;
+            left: 40px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.3);
+        }
+        .center { text-align: center; }
+        .emoji { font-size: 4rem; margin-bottom: 20px; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+        .three-column { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 30px; }
+        .four-column { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 20px; }
+        .stat-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            border: 1px solid rgba(169, 149, 92, 0.2);
+        }
+        .stat-box .number { font-size: 2.5rem; font-weight: 700; color: var(--um-gold); }
+        .stat-box .label { font-size: 1.1rem; color: rgba(255,255,255,0.7); margin-top: 10px; }
+        .um-logo-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--um-gold) 0%, var(--um-coral) 100%);
+        }
+        .title-slide-extra {
+            margin-top: 40px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(169, 149, 92, 0.3);
+        }
+        .severity-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin: 5px;
+        }
+        .severity-critical { background: #dc2626; color: white; }
+        .severity-high { background: #f59e0b; color: white; }
+        .severity-moderate { background: #fbbf24; color: #000; }
+        .severity-low { background: #10b981; color: white; }
+        .flow {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 40px 0;
+            flex-wrap: wrap;
+        }
+        .flow-item {
+            background: rgba(169, 149, 92, 0.15);
+            border: 2px solid var(--um-gold);
+            border-radius: 15px;
+            padding: 20px 25px;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+        .flow-arrow {
+            font-size: 1.8rem;
+            color: var(--um-gold);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid rgba(169, 149, 92, 0.3);
+        }
+        th {
+            color: var(--um-gold);
+            font-weight: 600;
+        }
+        .timeline {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+            position: relative;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 10%;
+            right: 10%;
+            height: 4px;
+            background: var(--um-gold);
+        }
+        .timeline-item {
+            text-align: center;
+            z-index: 1;
+            flex: 1;
+        }
+        .timeline-dot {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--um-gold);
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        @media print {
+            body { overflow: visible; }
+            .slide {
+                display: flex !important;
+                page-break-after: always;
+                page-break-inside: avoid;
+                min-height: 100vh;
+            }
+            .slide:last-child { page-break-after: auto; }
+            .slide-number, .nav-hint, .logo { display: none !important; }
+            @page { size: 16in 9in landscape; margin: 0; }
+        }
+    </style>
+</head>
+<body>
+    <div class="um-logo-bar"></div>
+    <div class="logo">MAASTRICHT UNIVERSITY</div>
+    <div class="nav-hint">← → or Space to navigate</div>
+
+    <!-- Slide 1: Title -->
+    <div class="slide active" id="slide1">
+        <div class="emoji">⚖️</div>
+        <h1>Digital Sovereignty Due Diligence</h1>
+        <p class="subtitle">Leveraging UM's HRDD Framework for Vendor Assessment</p>
+        <div class="title-slide-extra">
+            <p style="color: rgba(255,255,255,0.5);">Bernd Kapeller · Digital Innovation · Marketing & Communications</p>
+            <p style="color: rgba(255,255,255,0.4); margin-top: 10px;">March 2026 · Draft for Discussion</p>
+            <p style="color: rgba(255,255,255,0.35); margin-top: 25px; font-size: 1rem;">Based on: UM HRDD Assessment Framework (24 Feb 2025)</p>
+        </div>
+    </div>
+
+    <!-- Slide 2: The Question -->
+    <div class="slide" id="slide2">
+        <div class="emoji">🤔</div>
+        <h2>The Question</h2>
+        <div class="quote">
+            "If UM terminates partnerships with institutions that violate human rights, why do we contract with vendors that do?"
+        </div>
+        <p style="margin-top: 40px;">UM's HRDD Framework already provides the methodology.</p>
+        <p style="margin-top: 20px;">We just need to <span class="highlight">extend it to vendors</span>.</p>
+    </div>
+
+    <!-- Slide 3: What UM Already Has -->
+    <div class="slide" id="slide3">
+        <h2>🏛️ What UM Already Has</h2>
+        <div class="brain-box">
+            <h3>Sensitive Partnerships Unit (SPU)</h3>
+            <p style="font-size: 1.4rem;">Central intake for all partnership concerns</p>
+        </div>
+        <div class="quote">
+            "The existing Knowledge Security Desk will be reframed into a 'Sensitive Partnerships Unit', which will become the first point of contact for the UM community."
+        </div>
+        <p class="cite">— HRDD Framework, Section 1.2</p>
+    </div>
+
+    <!-- Slide 4: Three Sub-Committees -->
+    <div class="slide" id="slide4">
+        <h2>📋 Ready-Made Committee Structure</h2>
+        <div class="quote">
+            "We will create one core committee – the Sensitive Partnerships Committee – that will oversee three sub-committees"
+        </div>
+        <p class="cite">— HRDD Framework, Section 1.2</p>
+        <div class="four-column" style="margin-top: 40px;">
+            <div class="stat-box">
+                <div class="number" style="font-size: 2rem;">🔒</div>
+                <div class="label">Knowledge Security</div>
+                <p style="margin-top: 10px; font-size: 1rem; color: #10b981;">✓ Exists</p>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 2rem;">👤</div>
+                <div class="label">HRDD</div>
+                <p style="margin-top: 10px; font-size: 1rem; color: #10b981;">✓ Exists</p>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 2rem;">🛢️</div>
+                <div class="label">Fossil Industries</div>
+                <p style="margin-top: 10px; font-size: 1rem; color: #10b981;">✓ Exists</p>
+            </div>
+            <div class="stat-box" style="border: 2px solid var(--um-coral);">
+                <div class="number" style="font-size: 2rem;">💻</div>
+                <div class="label">Digital Sovereignty</div>
+                <p style="margin-top: 10px; font-size: 1rem; color: var(--um-coral);">+ Add</p>
+            </div>
+        </div>
+        <p style="margin-top: 30px; text-align: center; color: rgba(255,255,255,0.7);">
+            <span class="highlight">Zero new infrastructure required</span>
+        </p>
+    </div>
+
+    <!-- Slide 5: Ethical Expert Link -->
+    <div class="slide" id="slide5">
+        <h2>🔗 Built-In Consistency</h2>
+        <div class="quote">
+            "The ethical expert [...] is a member of each sub-committee, ensuring that similar ethical considerations are taken into account."
+        </div>
+        <p class="cite">— HRDD Framework, Section 1.2</p>
+        <div class="brain-box" style="margin-top: 40px;">
+            <h3>Why This Matters for DSDD</h3>
+            <ul style="text-align: left; margin-top: 20px;">
+                <li>Same ethical standards across all assessments</li>
+                <li>No risk of inconsistent decisions</li>
+                <li><span class="highlight">Hebrew U standard = Microsoft standard</span></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Slide 6: 8-Step Process -->
+    <div class="slide" id="slide6">
+        <h2>📝 8-Step Process (Already Defined)</h2>
+        <p style="margin-bottom: 20px;">HRDD Framework, Section 2.1</p>
+        <div class="two-column">
+            <div>
+                <table style="font-size: 1.2rem;">
+                    <tr><td>1</td><td>SPU initial analysis</td></tr>
+                    <tr><td>2</td><td>Community notification</td></tr>
+                    <tr><td>3</td><td>Committee assessment</td></tr>
+                    <tr><td>4</td><td>Contact partner leadership</td></tr>
+                </table>
+            </div>
+            <div>
+                <table style="font-size: 1.2rem;">
+                    <tr><td>5</td><td>Allow response</td></tr>
+                    <tr><td>6</td><td>EB decision</td></tr>
+                    <tr><td>7</td><td>Communicate decision</td></tr>
+                    <tr><td>8</td><td>Publish on UMployee</td></tr>
+                </table>
+            </div>
+        </div>
+        <p style="margin-top: 40px; text-align: center;">
+            <span class="highlight">DSDD uses same process</span> — just "partner" → "vendor"
+        </p>
+    </div>
+
+    <!-- Slide 7: Trigger Mapping -->
+    <div class="slide" id="slide7">
+        <h2>⚡ Triggers: Direct Mapping</h2>
+        <table>
+            <tr>
+                <th>HRDD Trigger</th>
+                <th>DSDD Equivalent</th>
+            </tr>
+            <tr>
+                <td>Current partnerships</td>
+                <td>Current vendor contracts</td>
+            </tr>
+            <tr>
+                <td>New partnerships</td>
+                <td>New procurement</td>
+            </tr>
+            <tr>
+                <td>Geopolitical changes</td>
+                <td>Vendor ownership change</td>
+            </tr>
+            <tr>
+                <td>Staff proposal</td>
+                <td>New tool request</td>
+            </tr>
+            <tr>
+                <td>Whistleblower</td>
+                <td>Whistleblower</td>
+            </tr>
+        </table>
+        <p class="cite" style="margin-top: 20px;">Based on HRDD Framework, Section 2.1</p>
+    </div>
+
+    <!-- Slide 8: Contract Clause -->
+    <div class="slide" id="slide8">
+        <h2>📄 Contract Clause: Ready to Adapt</h2>
+        <p style="margin-bottom: 20px;">HRDD Framework, Section 4.1 (Preferred option)</p>
+        <div class="quote">
+            "Either Party is entitled to prematurely terminate this Agreement immediately [...] in the event that there have been serious indications that the party has contributed to serious human rights violations"
+        </div>
+        <h3 style="margin-top: 40px;">DSDD Extension:</h3>
+        <p style="font-size: 1.3rem;">Add: "...or the vendor becomes subject to <span class="highlight">extraterritorial data access orders</span> conflicting with EU law; or the vendor is <span class="highlight">acquired by an entity</span> failing UM's digital sovereignty assessment criteria."</p>
+    </div>
+
+    <!-- Slide 9: The Assessment Gap -->
+    <div class="slide" id="slide9">
+        <h2>📊 The Assessment Gap</h2>
+        <div class="comparison">
+            <div class="comparison-box good">
+                <h3>✓ HRDD Assesses</h3>
+                <ul class="action-list">
+                    <li>University partnerships</li>
+                    <li>Research collaborations</li>
+                    <li>Country-level HR</li>
+                    <li>Knowledge security</li>
+                </ul>
+            </div>
+            <div class="comparison-box bad">
+                <h3>✗ Gap (No Framework)</h3>
+                <ul class="result-list">
+                    <li>Software vendors</li>
+                    <li>Cloud providers</li>
+                    <li>Vendor jurisdiction</li>
+                    <li>Data sovereignty</li>
+                </ul>
+            </div>
+        </div>
+        <p style="margin-top: 30px; text-align: center;">
+            HRDD explicitly covers <span class="highlight">"commercial partnerships"</span> (Section 1.4) — vendors fit this scope.
+        </p>
+    </div>
+
+    <!-- Slide 10: DSDD Criteria -->
+    <div class="slide" id="slide10">
+        <h2>🎯 DSDD Assessment Criteria</h2>
+        <p style="margin-bottom: 30px;">Five dimensions (extending HRDD)</p>
+        <div class="three-column">
+            <div class="stat-box">
+                <div class="number">⚖️</div>
+                <div class="label">Human Rights</div>
+                <p style="margin-top: 10px; font-size: 1rem;">Military? Surveillance?</p>
+            </div>
+            <div class="stat-box">
+                <div class="number">🔒</div>
+                <div class="label">Data Sovereignty</div>
+                <p style="margin-top: 10px; font-size: 1rem;">CLOUD Act? EU jurisdiction?</p>
+            </div>
+            <div class="stat-box">
+                <div class="number">🤖</div>
+                <div class="label">AI Ethics</div>
+                <p style="margin-top: 10px; font-size: 1rem;">Training data? Transparency?</p>
+            </div>
+            <div class="stat-box">
+                <div class="number">🌱</div>
+                <div class="label">Environmental</div>
+                <p style="margin-top: 10px; font-size: 1rem;">Energy use?</p>
+            </div>
+            <div class="stat-box">
+                <div class="number">🔓</div>
+                <div class="label">Lock-in</div>
+                <p style="margin-top: 10px; font-size: 1rem;">Exit costs? Portability?</p>
+            </div>
+        </div>
+        <p class="cite" style="margin-top: 20px;">Built on ICC definitions used in HRDD (Section 1.3)</p>
+    </div>
+
+    <!-- Slide 11: Severity Levels -->
+    <div class="slide" id="slide11">
+        <h2>🚦 Severity Levels</h2>
+        <p style="margin-bottom: 20px;">Mirroring HRDD approach</p>
+        <table>
+            <tr>
+                <td><span class="severity-badge severity-critical">🔴 Critical</span></td>
+                <td>Direct violations</td>
+                <td><strong>Terminate</strong></td>
+            </tr>
+            <tr>
+                <td><span class="severity-badge severity-high">🟠 High</span></td>
+                <td>Significant concerns</td>
+                <td><strong>Require mitigation</strong></td>
+            </tr>
+            <tr>
+                <td><span class="severity-badge severity-moderate">🟡 Moderate</span></td>
+                <td>Addressable</td>
+                <td><strong>Monitor</strong></td>
+            </tr>
+            <tr>
+                <td><span class="severity-badge severity-low">🟢 Low</span></td>
+                <td>No concerns</td>
+                <td><strong>Proceed</strong></td>
+            </tr>
+        </table>
+        <p style="margin-top: 30px; text-align: center;">
+            HRDD principle applies: assess vendor's <span class="highlight">own contribution</span> to violations.
+        </p>
+    </div>
+
+    <!-- Slide 12: Committee Composition -->
+    <div class="slide" id="slide12">
+        <h2>👥 DSDD Committee Composition</h2>
+        <p style="margin-bottom: 20px;">Following HRDD model (Section 3.2)</p>
+        <table>
+            <tr>
+                <th>HRDD Role</th>
+                <th>DSDD Equivalent</th>
+            </tr>
+            <tr>
+                <td>Chair (open application)</td>
+                <td>IT governance expert</td>
+            </tr>
+            <tr>
+                <td>Ethical expert (shared)</td>
+                <td><span class="highlight">Same person</span></td>
+            </tr>
+            <tr>
+                <td>HR law expertise</td>
+                <td>Data protection / GDPR</td>
+            </tr>
+            <tr>
+                <td>Research integrity</td>
+                <td>Cybersecurity</td>
+            </tr>
+            <tr>
+                <td>Political sensitivity</td>
+                <td>Procurement / contract law</td>
+            </tr>
+        </table>
+        <p style="margin-top: 20px; text-align: center; color: rgba(255,255,255,0.7);">+ 5 ad hoc experts (per HRDD model)</p>
+    </div>
+
+    <!-- Slide 13: Timeline -->
+    <div class="slide" id="slide13">
+        <h2>🗓️ Timeline: Following HRDD Model</h2>
+        <p style="margin-bottom: 20px;">HRDD took ~6 months from approval to pilot</p>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-dot">Q2</div>
+                <h3 style="color: var(--um-gold); margin-bottom: 15px;">Proposal</h3>
+                <p style="font-size: 1.1rem;">Present to MT/UC</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot">Q3</div>
+                <h3 style="color: var(--um-gold); margin-bottom: 15px;">Recruit</h3>
+                <p style="font-size: 1.1rem;">Committee members</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot">Q4</div>
+                <h3 style="color: var(--um-gold); margin-bottom: 15px;">Pilot</h3>
+                <p style="font-size: 1.1rem;">3 vendors</p>
+            </div>
+            <div class="timeline-item">
+                <div class="timeline-dot">Q1</div>
+                <h3 style="color: var(--um-gold); margin-bottom: 15px;">Rollout</h3>
+                <p style="font-size: 1.1rem;">2027</p>
+            </div>
+        </div>
+        <p style="margin-top: 40px; text-align: center;">
+            <span class="highlight">HRDD evaluation: Sept-Nov 2025</span> — natural moment to propose DSDD
+        </p>
+    </div>
+
+    <!-- Slide 14: Pilot Vendors -->
+    <div class="slide" id="slide14">
+        <h2>🧪 Pilot: 3 Vendors</h2>
+        <p style="margin-bottom: 20px;">Following HRDD pilot model (3 countries)</p>
+        <div class="three-column">
+            <div class="stat-box">
+                <div class="number" style="font-size: 2rem;">Ⓜ️</div>
+                <div class="label">Microsoft 365</div>
+                <p style="margin-top: 15px; font-size: 1rem;">Enterprise-wide<br>CLOUD Act exposure</p>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 2rem;">🔵</div>
+                <div class="label">Google Workspace</div>
+                <p style="margin-top: 15px; font-size: 1rem;">Education suite<br>Data practices</p>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 2rem;">🤖</div>
+                <div class="label">Anthropic</div>
+                <p style="margin-top: 15px; font-size: 1rem;">AI provider<br>Self-assessment demo</p>
+            </div>
+        </div>
+        <p style="margin-top: 40px; text-align: center; color: rgba(255,255,255,0.7);">
+            Phase 1 is <span class="highlight">information gathering</span> only — no contract changes yet.
+        </p>
+    </div>
+
+    <!-- Slide 15: The Consistency Argument -->
+    <div class="slide" id="slide15">
+        <h2>💡 The Consistency Argument</h2>
+        <div class="quote">
+            "We approach global engagement with 'yes, unless we have major concerns'. UM encourages global engagement [...] as international collaboration is crucial for the quality of our research and teaching."
+        </div>
+        <p class="cite">— HRDD Framework, Section 1.1</p>
+        <div class="brain-box" style="margin-top: 40px;">
+            <h3>DSDD Translation</h3>
+            <p style="font-size: 1.4rem;">Same principle for vendors: <span class="highlight">"yes, unless we have major concerns."</span></p>
+            <p style="margin-top: 15px;">Apply same scrutiny we give academic partners.</p>
+        </div>
+    </div>
+
+    <!-- Slide 16: EU Alignment -->
+    <div class="slide" id="slide16">
+        <h2>🇪🇺 EU Policy Alignment</h2>
+        <table>
+            <tr>
+                <th>Directive</th>
+                <th>UM?</th>
+                <th>Notes</th>
+            </tr>
+            <tr>
+                <td>EU AI Act</td>
+                <td><span class="success">✅ Applies</span></td>
+                <td>Full compliance Aug 2027</td>
+            </tr>
+            <tr>
+                <td>CSDDD</td>
+                <td><span class="warning">❌ No</span></td>
+                <td>Companies only</td>
+            </tr>
+            <tr>
+                <td>CSRD</td>
+                <td><span class="warning">❌ No</span></td>
+                <td>Companies only</td>
+            </tr>
+        </table>
+        <p style="margin-top: 30px;">UM = <em>publiekrechtelijke instelling</em>, not limited liability company</p>
+        <p style="margin-top: 15px; color: rgba(255,255,255,0.7);">But: <span class="highlight">voluntary adoption = good governance + reputation</span></p>
+    </div>
+
+    <!-- Slide 17: AI Governance Integration -->
+    <div class="slide" id="slide17">
+        <h2>🔗 AI Governance Integration</h2>
+        <p style="margin-bottom: 20px;">Complements Ellen Bastiaens' proposal</p>
+        <div class="comparison">
+            <div class="comparison-box">
+                <h3 style="color: var(--um-gold);">AI Gov (Current)</h3>
+                <ul>
+                    <li>Internal AI policies</li>
+                    <li>Staff training</li>
+                    <li>AI register</li>
+                </ul>
+            </div>
+            <div class="comparison-box">
+                <h3 style="color: var(--um-gold);">+ DSDD Extension</h3>
+                <ul>
+                    <li>External vendor assessment</li>
+                    <li>Procurement criteria</li>
+                    <li>Vendor systems included</li>
+                </ul>
+            </div>
+        </div>
+        <p style="margin-top: 30px; text-align: center;">
+            <span class="highlight">DSDD fills the vendor gap</span> AI Governance identified.
+        </p>
+    </div>
+
+    <!-- Slide 18: Resources -->
+    <div class="slide" id="slide18">
+        <h2>💰 Resources: Year 1</h2>
+        <div class="two-column" style="margin-top: 30px;">
+            <div>
+                <table>
+                    <tr>
+                        <td>Coordination (0.2 FTE)</td>
+                        <td>~€23K</td>
+                    </tr>
+                    <tr>
+                        <td>Committee time</td>
+                        <td>Voluntary</td>
+                    </tr>
+                    <tr>
+                        <td>External support</td>
+                        <td>€10-20K</td>
+                    </tr>
+                    <tr style="background: rgba(169, 149, 92, 0.2);">
+                        <td><strong>Total</strong></td>
+                        <td><strong>€35-45K</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="brain-box" style="display: flex; flex-direction: column; justify-content: center;">
+                <h3>Potential Funding</h3>
+                <p style="font-size: 1.2rem; margin-top: 15px;">AI Governance Luik 3</p>
+                <p style="font-size: 2.5rem; color: var(--um-gold); margin-top: 10px;">€391K</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 19: Why UM, Why Now -->
+    <div class="slide" id="slide19">
+        <h2>🎯 Why UM? Why Now?</h2>
+        <div class="two-column" style="margin-top: 30px;">
+            <div>
+                <h3>Why UM?</h3>
+                <ul class="action-list">
+                    <li>First-mover in NL</li>
+                    <li><strong>Proven HRDD methodology</strong></li>
+                    <li>~100 staff in DS sessions</li>
+                    <li>SPU infrastructure exists</li>
+                </ul>
+            </div>
+            <div>
+                <h3>Why Now?</h3>
+                <ul class="action-list">
+                    <li>HRDD evaluation: Sept-Nov 2025</li>
+                    <li>EU AI Act: Aug 2027</li>
+                    <li>AI Governance momentum</li>
+                    <li>Lead, don't follow</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 20: Summary -->
+    <div class="slide" id="slide20">
+        <div class="emoji">✅</div>
+        <h2>Summary: We Have Everything</h2>
+        <div class="three-column" style="margin-top: 30px;">
+            <div class="stat-box">
+                <div class="number" style="font-size: 1.8rem;">SPU</div>
+                <div class="label">Intake unit exists</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 1.8rem;">Committee</div>
+                <div class="label">Structure exists</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 1.8rem;">Process</div>
+                <div class="label">8 steps defined</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 1.8rem;">Clause</div>
+                <div class="label">Template exists</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 1.8rem;">Expert</div>
+                <div class="label">Linking pin</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size: 1.8rem;">Timeline</div>
+                <div class="label">Model proven</div>
+            </div>
+        </div>
+        <p style="margin-top: 40px; text-align: center; font-size: 1.8rem;">
+            <span class="warning">We're not building new — we're extending proven.</span>
+        </p>
+    </div>
+
+    <!-- Slide 21: Next Steps -->
+    <div class="slide" id="slide21">
+        <div class="emoji">🚀</div>
+        <h2>Next Steps</h2>
+        <ul class="action-list" style="margin-top: 30px;">
+            <li><strong>Discuss</strong> with Ellen Bastiaens (AI Governance, EDLAB)</li>
+            <li><strong>Consult</strong> David Shaw (HRAC Chair)</li>
+            <li><strong>Consult</strong> Andrada Matauanu (Knowledge Security)</li>
+            <li><strong>Propose</strong> at HRDD evaluation (Sept-Nov 2025)</li>
+            <li><strong>Pilot</strong> 3 vendor assessments</li>
+        </ul>
+        <div class="title-slide-extra" style="margin-top: 40px;">
+            <p><strong>Contact:</strong> Bernd Kapeller · Digital Innovation (M&C)</p>
+            <p style="margin-top: 15px; font-size: 1rem; color: rgba(255,255,255,0.5);">Made with 🐢 Ralph</p>
+        </div>
+    </div>
+
+    <!-- Slide 22: Sources -->
+    <div class="slide" id="slide22">
+        <h2>📚 Sources & Verification</h2>
+        <div class="two-column" style="margin-top: 30px;">
+            <div>
+                <h3>Primary Sources</h3>
+                <ul>
+                    <li>UM HRDD Assessment Framework (24 Feb 2025)</li>
+                    <li>EDLAB AI Governance Proposal (Jan 2026)</li>
+                </ul>
+            </div>
+            <div>
+                <h3>All Citations Verified</h3>
+                <p>dossiers/digital-sovereignty/<br>UM-HRDD-Assessment-Framework.pdf</p>
+                <p style="margin-top: 20px;"><strong>Full mapping:</strong></p>
+                <p>dossiers/digital-sovereignty/<br>hrdd-to-dsdd-mapping.md</p>
+            </div>
+        </div>
+        <p style="margin-top: 40px; text-align: center; color: rgba(255,255,255,0.5);">
+            Draft for discussion · March 2026
+        </p>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 22</div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        let currentSlide = 0;
+
+        function showSlide(n) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (n + slides.length) % slides.length;
+            slides[currentSlide].classList.add('active');
+            document.getElementById('slideNumber').textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                showSlide(currentSlide + 1);
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                showSlide(currentSlide - 1);
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.clientX > window.innerWidth / 2) {
+                showSlide(currentSlide + 1);
+            } else {
+                showSlide(currentSlide - 1);
+            }
+        });
+    </script>
+</body>
+</html>

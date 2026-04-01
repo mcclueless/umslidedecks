@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DI Ideas 2026 - M&C Hoofddoelstellingen</title>
+    <style>
+        :root {
+            --um-navy: #000933;
+            --um-gold: #A9955C;
+            --um-coral: #EA7C69;
+            --um-light: #f5f5f5;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', 'Fira Sans', Arial, sans-serif;
+            background: white;
+            color: var(--um-navy);
+        }
+        
+        .slide {
+            width: 100%;
+            max-width: 960px;
+            min-height: 540px;
+            margin: 20px auto;
+            padding: 40px;
+            background: white;
+            border: 1px solid #ddd;
+            page-break-after: always;
+            position: relative;
+        }
+        
+        .slide-title {
+            background: var(--um-navy);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .slide-title h1 {
+            font-size: 42px;
+            margin-bottom: 20px;
+        }
+        
+        .slide-title .subtitle {
+            font-size: 24px;
+            color: var(--um-gold);
+        }
+        
+        .slide-section {
+            background: var(--um-navy);
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+        }
+        
+        .slide-section h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            color: var(--um-gold);
+        }
+        
+        .slide-section p {
+            font-size: 22px;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        h2 {
+            color: var(--um-navy);
+            font-size: 28px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--um-gold);
+        }
+        
+        h3 {
+            color: var(--um-navy);
+            font-size: 20px;
+            margin: 25px 0 15px 0;
+        }
+        
+        .intro-box {
+            background: var(--um-light);
+            padding: 25px;
+            border-left: 4px solid var(--um-gold);
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+        
+        th {
+            background: var(--um-navy);
+            color: white;
+            padding: 12px 15px;
+            text-align: left;
+        }
+        
+        td {
+            padding: 10px 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        tr:nth-child(even) {
+            background: var(--um-light);
+        }
+        
+        .score {
+            font-weight: bold;
+            text-align: center;
+        }
+        
+        .score-high { color: #2e7d32; }
+        .score-med { color: var(--um-gold); }
+        .score-low { color: var(--um-coral); }
+        
+        .pijler-tag {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .pijler-ai { background: #e3f2fd; color: #1565c0; }
+        .pijler-platform { background: #f3e5f5; color: #7b1fa2; }
+        .pijler-ux { background: #e8f5e9; color: #2e7d32; }
+        .pijler-data { background: #fff3e0; color: #ef6c00; }
+        .pijler-kwaliteit { background: #fce4ec; color: #c2185b; }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .summary-card {
+            background: var(--um-light);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .summary-card h4 {
+            color: var(--um-navy);
+            margin-bottom: 10px;
+        }
+        
+        .summary-card .number {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--um-gold);
+        }
+        
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .logo-bar {
+            background: var(--um-navy);
+            height: 8px;
+            margin-bottom: 30px;
+        }
+        
+        @media print {
+            .slide {
+                border: none;
+                margin: 0;
+                page-break-after: always;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide slide-title">
+    <h1>DI Ideas 2026</h1>
+    <p class="subtitle">31 Projectideeën gekoppeld aan M&C Hoofddoelstellingen</p>
+    <p style="margin-top: 40px; font-size: 18px;">Digital Innovation Team | 25 februari 2026</p>
+</div>
+
+<!-- SLIDE 2: Context -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>Waarom deze analyse?</h2>
+    
+    <div class="intro-box">
+        <strong>Uitgangspunt:</strong> M&C-collega's hebben 31 projectideeën aangeleverd voor Digital Innovation. 
+        Om deze te prioriteren en te koppelen aan onze strategische koers, hebben we elk idee geanalyseerd 
+        langs twee assen:
+    </div>
+    
+    <h3>1. M&C Hoofddoelstellingen (Wat willen we bereiken?)</h3>
+    <ul style="margin-left: 30px; line-height: 2;">
+        <li><strong>POSITIONERING</strong> — Zichtbaar maken van UM's onderscheidende positie</li>
+        <li><strong>STUDENTENWERVING</strong> — Voorlichting aan en werving van studenten</li>
+        <li><strong>INTERNE COMMUNICATIE</strong> — Communicatie met UM-medewerkers</li>
+        <li><strong>KENNIS VAN DOELGROEPEN</strong> — Inzicht in doelgroepen en effectiviteit</li>
+    </ul>
+    
+    <h3>2. DI Strategische Pijlers (Hoe gaan we het doen?)</h3>
+    <ul style="margin-left: 30px; line-height: 2;">
+        <li><strong>AI</strong> — Strategische en efficiënte inzet van AI</li>
+        <li><strong>PLATFORMEN</strong> — Platformen als fundament van digitale processen</li>
+        <li><strong>UX</strong> — Optimale gebruikerservaring</li>
+        <li><strong>DATA</strong> — Data-driven werken (randvoorwaarde)</li>
+        <li><strong>KWALITEIT</strong> — Kwaliteit & toegankelijkheid (randvoorwaarde)</li>
+    </ul>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 3: Overview -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>Verdeling over Hoofddoelstellingen</h2>
+    
+    <div class="summary-grid">
+        <div class="summary-card">
+            <h4>POSITIONERING</h4>
+            <div class="number">11</div>
+            <p>projecten</p>
+        </div>
+        <div class="summary-card">
+            <h4>STUDENTENWERVING</h4>
+            <div class="number">6</div>
+            <p>projecten</p>
+        </div>
+        <div class="summary-card">
+            <h4>INTERNE COMMUNICATIE</h4>
+            <div class="number">9</div>
+            <p>projecten</p>
+        </div>
+        <div class="summary-card">
+            <h4>KENNIS VAN DOELGROEPEN</h4>
+            <div class="number">5</div>
+            <p>projecten</p>
+        </div>
+    </div>
+    
+    <div class="intro-box">
+        <strong>Opvallend:</strong> Het zwaartepunt ligt bij <em>Positionering</em> (35%) — 
+        collega's zien veel kansen om UM's zichtbaarheid en merkpositie te versterken via digitale innovatie.
+    </div>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 4: POSITIONERING Section Header -->
+<div class="slide slide-section">
+    <h2>POSITIONERING</h2>
+    <p>Zichtbaar maken van de onderscheidende positie en maatschappelijke impact van UM — voor studiekiezers, werkzoekenden en partners.</p>
+    <p style="margin-top: 30px; font-size: 18px;"><strong>11 projecten | Top score: 95</strong></p>
+</div>
+
+<!-- SLIDE 5: POSITIONERING Projects -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>POSITIONERING — Projecten</h2>
+    
+    <table>
+        <tr>
+            <th style="width: 40%;">Project</th>
+            <th style="width: 35%;">Wat draagt het bij?</th>
+            <th style="width: 15%;">DI Pijler</th>
+            <th style="width: 10%;">Score</th>
+        </tr>
+        <tr>
+            <td>llms.txt voor AI crawlers</td>
+            <td>UM vindbaar in ChatGPT/Perplexity</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Zoekfunctionaliteit website</td>
+            <td>Bezoekers vinden wat ze zoeken</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Teksten transformeren (AI)</td>
+            <td>Inclusieve, toegankelijke content</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>AI bijsluiter</td>
+            <td>Transparantie over AI-gebruik</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>Crisis teksten (AI)</td>
+            <td>Snelle reputatiebescherming</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>aiditor: AI Content controle</td>
+            <td>Consistente contentkwaliteit</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-med">80</td>
+        </tr>
+        <tr>
+            <td>Experts etalage voor media</td>
+            <td>UM-expertise vindbaar voor pers</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-med">80</td>
+        </tr>
+    </table>
+    
+    <p style="font-size: 13px; color: #666; margin-top: 10px;">
+        + Infographics AI (75), Mediamonitoring perscontacten (75), Webshop UM50 (70)
+    </p>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 6: STUDENTENWERVING Section Header -->
+<div class="slide slide-section">
+    <h2>STUDENTENWERVING</h2>
+    <p>Voorlichting aan en werving van (aankomende) studenten — de juiste student op de juiste plek.</p>
+    <p style="margin-top: 30px; font-size: 18px;"><strong>6 projecten | Top score: 95</strong></p>
+</div>
+
+<!-- SLIDE 7: STUDENTENWERVING Projects -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>STUDENTENWERVING — Projecten</h2>
+    
+    <table>
+        <tr>
+            <th style="width: 40%;">Project</th>
+            <th style="width: 35%;">Wat draagt het bij?</th>
+            <th style="width: 15%;">DI Pijler</th>
+            <th style="width: 10%;">Score</th>
+        </tr>
+        <tr>
+            <td>Personalisatie (CRM/Blueconic)</td>
+            <td>Persoonlijke studentcommunicatie</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Studiekeuze-adviestool of game</td>
+            <td>Minder keuzestress, betere match</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Virtual tours UM/Maastricht</td>
+            <td>Campus ervaren zonder te reizen</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>E-mail automatisering Events</td>
+            <td>Snellere respons op vragen</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>AI Findability / GEO/SEO</td>
+            <td>Vindbaar via AI-zoekmachines</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-med">80</td>
+        </tr>
+        <tr>
+            <td>Studievergelijkingstool</td>
+            <td>Opleidingen makkelijk vergelijken</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-med">80</td>
+        </tr>
+    </table>
+    
+    <div class="intro-box" style="margin-top: 20px;">
+        <strong>Patroon:</strong> 4 van de 6 projecten zijn <span class="pijler-tag pijler-ux">UX</span> — 
+        studentenwerving draait om een optimale gebruikerservaring voor studiekiezers.
+    </div>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 8: INTERNE COMMUNICATIE Section Header -->
+<div class="slide slide-section">
+    <h2>INTERNE COMMUNICATIE</h2>
+    <p>Communicatie met en betrokkenheid van UM-medewerkers — iedereen verbonden en geïnformeerd.</p>
+    <p style="margin-top: 30px; font-size: 18px;"><strong>9 projecten | Top score: 95</strong></p>
+</div>
+
+<!-- SLIDE 9: INTERNE COMMUNICATIE Projects -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>INTERNE COMMUNICATIE — Projecten</h2>
+    
+    <table>
+        <tr>
+            <th style="width: 40%;">Project</th>
+            <th style="width: 35%;">Wat draagt het bij?</th>
+            <th style="width: 15%;">DI Pijler</th>
+            <th style="width: 10%;">Score</th>
+        </tr>
+        <tr>
+            <td>Feedbackloops beleid</td>
+            <td>Meet of beleid de werkvloer bereikt</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>UMployee (intranet)</td>
+            <td>Data-driven intranetbeheer</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>Notuleren meetings (AI)</td>
+            <td>Automatische verslaglegging</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>Studentcommunicatieplatform</td>
+            <td>Betere studentportaal</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-med">80</td>
+        </tr>
+        <tr>
+            <td>Narrowcasting</td>
+            <td>Centraal schermbeheer</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-med">80</td>
+        </tr>
+        <tr>
+            <td>Tooling kennisdeling</td>
+            <td>PM-tool voor M&C</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-med">75</td>
+        </tr>
+    </table>
+    
+    <p style="font-size: 13px; color: #666; margin-top: 10px;">
+        + Privacy flowchart (70), Mobiliteit app (65), Crisiscommunicatie (60)
+    </p>
+    
+    <div class="intro-box" style="margin-top: 15px;">
+        <strong>Patroon:</strong> 6 van de 9 projecten zijn <span class="pijler-tag pijler-platform">PLATFORMEN</span> — 
+        interne communicatie vraagt vooral om goed werkende digitale infrastructuur.
+    </div>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 10: KENNIS VAN DOELGROEPEN Section Header -->
+<div class="slide slide-section">
+    <h2>KENNIS VAN DOELGROEPEN</h2>
+    <p>Inzicht in doelgroepen, trends en effectiviteit van communicatie — weten wat werkt.</p>
+    <p style="margin-top: 30px; font-size: 18px;"><strong>5 projecten | Top score: 95</strong></p>
+</div>
+
+<!-- SLIDE 11: KENNIS VAN DOELGROEPEN Projects -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>KENNIS VAN DOELGROEPEN — Projecten</h2>
+    
+    <table>
+        <tr>
+            <th style="width: 40%;">Project</th>
+            <th style="width: 35%;">Wat draagt het bij?</th>
+            <th style="width: 15%;">DI Pijler</th>
+            <th style="width: 10%;">Score</th>
+        </tr>
+        <tr>
+            <td>Analyse recruitment data</td>
+            <td>Inzicht in wervingstrends</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Innovation Hub</td>
+            <td>Overzicht AI-tools en behoeften</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Content evaluatie</td>
+            <td>Weten welke content werkt</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Crisis beeldvorming</td>
+            <td>Real-time sentiment monitoring</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Mediamonitoring artikelen</td>
+            <td>Bredere media-tracking</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-med">85</td>
+        </tr>
+        <tr>
+            <td>Innovatie Library</td>
+            <td>Feedback op innovatie-ideeën</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-med">75</td>
+        </tr>
+    </table>
+    
+    <div class="intro-box" style="margin-top: 20px;">
+        <strong>Patroon:</strong> 4 van de 5 projecten zijn <span class="pijler-tag pijler-data">DATA</span> — 
+        doelgroepkennis = data-driven werken.
+    </div>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 12: Quick Wins -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>Quick Wins — Score ≥90</h2>
+    
+    <div class="intro-box">
+        Deze 9 projecten scoren het hoogst op aansluiting bij DI-strategie én hebben duidelijke meerwaarde 
+        voor hun Hoofddoelstelling.
+    </div>
+    
+    <table>
+        <tr>
+            <th>Project</th>
+            <th>Hoofddoelstelling</th>
+            <th>DI Pijler</th>
+            <th>Score</th>
+        </tr>
+        <tr>
+            <td>llms.txt</td>
+            <td>POSITIONERING</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Feedbackloops beleid</td>
+            <td>INTERNE COMM</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Recruitment data analyse</td>
+            <td>KENNIS</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Personalisatie</td>
+            <td>STUDENTENWERVING</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-high">95</td>
+        </tr>
+        <tr>
+            <td>Innovation Hub</td>
+            <td>KENNIS</td>
+            <td><span class="pijler-tag pijler-ai">AI</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Zoekfunctionaliteit</td>
+            <td>POSITIONERING</td>
+            <td><span class="pijler-tag pijler-platform">PLATFORMEN</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Studiekeuze-tool</td>
+            <td>STUDENTENWERVING</td>
+            <td><span class="pijler-tag pijler-ux">UX</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Content evaluatie</td>
+            <td>KENNIS</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+        <tr>
+            <td>Crisis beeldvorming</td>
+            <td>KENNIS</td>
+            <td><span class="pijler-tag pijler-data">DATA</span></td>
+            <td class="score score-high">90</td>
+        </tr>
+    </table>
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 13: Summary -->
+<div class="slide">
+    <div class="logo-bar"></div>
+    <h2>Conclusie: Waar liggen de kansen?</h2>
+    
+    <h3>Per Hoofddoelstelling:</h3>
+    <ul style="margin-left: 30px; line-height: 2; margin-bottom: 20px;">
+        <li><strong>POSITIONERING:</strong> Focus op <span class="pijler-tag pijler-platform">PLATFORMEN</span> (llms.txt, zoekfunctie) en <span class="pijler-tag pijler-ai">AI</span> (tekstgeneratie)</li>
+        <li><strong>STUDENTENWERVING:</strong> Investeer in <span class="pijler-tag pijler-ux">UX</span> — de student journey verbeteren</li>
+        <li><strong>INTERNE COMM:</strong> Versterk <span class="pijler-tag pijler-platform">PLATFORMEN</span> — betere interne tooling</li>
+        <li><strong>KENNIS:</strong> Zet in op <span class="pijler-tag pijler-data">DATA</span> — meten en leren</li>
+    </ul>
+    
+    <h3>Aanbevolen eerste stappen:</h3>
+    <ol style="margin-left: 30px; line-height: 2;">
+        <li><strong>llms.txt</strong> — laagdrempelig, hoge impact, 1-2 uur werk</li>
+        <li><strong>Innovation Hub</strong> — enabler voor alle AI-projecten</li>
+        <li><strong>Content evaluatie</strong> — fundament voor data-driven werken</li>
+    </ol>
+    
+    <div class="footer">Maastricht University | Digital Innovation</div>
+</div>
+
+<!-- SLIDE 14: Closing -->
+<div class="slide slide-title" style="background: var(--um-navy);">
+    <h1 style="color: var(--um-gold);">Vragen?</h1>
+    <p style="color: white; margin-top: 40px; font-size: 20px;">
+        Digital Innovation Team<br>
+        digitalinnovationum@gmail.com
+    </p>
+    <p style="color: #666; margin-top: 60px; font-size: 14px;">
+        Analyse gegenereerd door Ralph 🐢 | 25 februari 2026
+    </p>
+</div>
+
+</body>
+</html>

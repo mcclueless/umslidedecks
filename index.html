@@ -10,6 +10,8 @@
             --um-perzikoranje: #EA7C69;
             --um-gebroken-wit: #FCFCFC;
             --um-zachtblauw: #BEDDF7;
+            --um-botergeel: #F1E798;
+            --um-tealgroen: #0F7564;
         }
         
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -23,7 +25,7 @@
         }
         
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
         }
         
@@ -42,17 +44,26 @@
             font-size: 1.1rem;
         }
         
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 400;
+            color: var(--um-botergeel);
+            margin: 40px 0 20px 0;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
         .presentations {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 15px;
         }
         
         .presentation-card {
             background: rgba(190, 221, 247, 0.1);
             border: 1px solid rgba(190, 221, 247, 0.2);
             border-radius: 12px;
-            padding: 25px 30px;
+            padding: 20px 25px;
             text-decoration: none;
             color: inherit;
             transition: all 0.3s ease;
@@ -64,26 +75,36 @@
             transform: translateX(10px);
         }
         
-        .presentation-card h2 {
-            font-size: 1.3rem;
+        .presentation-card h3 {
+            font-size: 1.15rem;
             font-weight: 500;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: var(--um-zachtblauw);
         }
         
-        .presentation-card:hover h2 {
+        .presentation-card:hover h3 {
             color: var(--um-perzikoranje);
         }
         
         .presentation-card .meta {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             opacity: 0.7;
         }
         
         .presentation-card .description {
-            margin-top: 10px;
-            font-size: 0.95rem;
-            line-height: 1.5;
+            margin-top: 8px;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
+        .variant {
+            display: inline-block;
+            background: rgba(15, 117, 100, 0.3);
+            color: var(--um-gebroken-wit);
+            font-size: 0.75rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-left: 10px;
         }
         
         footer {
@@ -106,17 +127,70 @@
             <p class="subtitle">Presentations & Slide Decks</p>
         </header>
         
+        <h2>Team & Strategy</h2>
         <div class="presentations">
             <a href="presentation.html" class="presentation-card">
-                <h2>Digital Innovation — Update for Team Leaders</h2>
+                <h3>Digital Innovation — Update for Team Leaders</h3>
                 <p class="meta">April 3, 2026 • M&C Team Leaders Meeting</p>
-                <p class="description">
-                    Progress update on the DI initiative: AI Findability project kickoff, 
-                    Innovation Hub concept, and timeline for Q2 2026.
-                </p>
+                <p class="description">AI Findability project kickoff, Innovation Hub concept, timeline Q2 2026.</p>
             </a>
             
-            <!-- Future presentations will be added here -->
+            <a href="di-ideas-2026/presentation.html" class="presentation-card">
+                <h3>DI Ideas 2026 — M&C Hoofddoelstellingen</h3>
+                <p class="meta">February 2026 • Team Planning</p>
+                <p class="description">32 ideas clustered by M&C strategic objectives: positioning, recruitment, internal comms, reputation.</p>
+            </a>
+            
+            <a href="team-data/presentation.html" class="presentation-card">
+                <h3>Team Data — Diensten Overzicht</h3>
+                <p class="meta">2026 • Internal Reference</p>
+                <p class="description">Overview of Team Data services and capabilities.</p>
+            </a>
+        </div>
+        
+        <h2>Ralph AI Assistant</h2>
+        <div class="presentations">
+            <a href="ralph-cio/presentation.html" class="presentation-card">
+                <h3>Ralph: AI Assistant Pilot — CIO Presentation</h3>
+                <p class="meta">2026 • CIO/IT Leadership</p>
+                <p class="description">Pilot results and architecture overview for IT leadership.</p>
+            </a>
+            
+            <a href="ralph-cio/armin-style.html" class="presentation-card">
+                <h3>Ralph — AI Assistant Pilot <span class="variant">Armin Style</span></h3>
+                <p class="meta">2026 • Alternative Design</p>
+                <p class="description">Same content, alternative visual style.</p>
+            </a>
+        </div>
+        
+        <h2>The Invisible Student (AI & Recruitment)</h2>
+        <div class="presentations">
+            <a href="invisible-student/presentation.html" class="presentation-card">
+                <h3>The Invisible Student — Full Presentation</h3>
+                <p class="meta">2026 • M&C Strategy</p>
+                <p class="description">How AI is changing student recruitment: the shift from search to answers.</p>
+            </a>
+            
+            <a href="invisible-student/part2-condensed.html" class="presentation-card">
+                <h3>Reverse Engineering the Invisible Student <span class="variant">Part 2 Condensed</span></h3>
+                <p class="meta">2026 • Deep Dive</p>
+                <p class="description">2x2 framework for categorizing prospective student questions to AI tools.</p>
+            </a>
+        </div>
+        
+        <h2>Digital Sovereignty</h2>
+        <div class="presentations">
+            <a href="digital-sovereignty/presentation.html" class="presentation-card">
+                <h3>DSDD — Digital Sovereignty</h3>
+                <p class="meta">2026 • Policy & Strategy</p>
+                <p class="description">Digital sovereignty and data governance framework.</p>
+            </a>
+            
+            <a href="digital-sovereignty/hrdd-presentation.html" class="presentation-card">
+                <h3>DSDD + HRDD Integration</h3>
+                <p class="meta">2026 • Extended Framework</p>
+                <p class="description">Integration with Human Rights Due Diligence requirements.</p>
+            </a>
         </div>
         
         <footer>

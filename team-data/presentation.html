@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Team Data — Diensten Overzicht</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #000933 0%, #001f6e 100%);
+    color: white;
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 200px; height: 200px;
+    background: rgba(169,149,92,0.15);
+    border-radius: 50%;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; left: -40px;
+    width: 250px; height: 250px;
+    background: rgba(169,149,92,0.1);
+    border-radius: 50%;
+  }
+  header h1 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+    position: relative;
+    z-index: 1;
+  }
+  header .subtitle {
+    font-size: 1.05rem;
+    color: #A9955C;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    position: relative;
+    z-index: 1;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 1.8rem;
+    padding: 2.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,9,51,0.08);
+    overflow: hidden;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: default;
+  }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 36px rgba(0,9,51,0.15);
+  }
+  .card-header {
+    padding: 1.6rem 1.8rem 1.2rem;
+    border-bottom: 1px solid #f0f2f5;
+    position: relative;
+  }
+  .card-header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 5px;
+    height: 100%;
+    border-radius: 0;
+  }
+  .card:nth-child(1) .card-header::before { background: #4361ee; }
+  .card:nth-child(2) .card-header::before { background: #00b4d8; }
+  .card:nth-child(3) .card-header::before { background: #A9955C; }
+  .card-icon {
+    font-size: 2rem;
+    margin-bottom: 0.6rem;
+  }
+  .card h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #000933;
+    margin-bottom: 0.2rem;
+  }
+  .card .tagline {
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+  }
+  .card-when {
+    background: #f8f9fc;
+    margin: 0 1.8rem;
+    padding: 0.9rem 1rem;
+    border-radius: 8px;
+    margin-top: 1.2rem;
+    font-size: 0.9rem;
+    color: #444;
+    border-left: 3px solid #dde;
+  }
+  .card-when strong {
+    display: block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: #999;
+    margin-bottom: 0.3rem;
+  }
+  .card-body {
+    padding: 1.2rem 1.8rem 1.5rem;
+  }
+  .card-body h3 {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #999;
+    margin-bottom: 0.7rem;
+    margin-top: 1rem;
+  }
+  .card-body h3:first-child { margin-top: 0; }
+  .services-list {
+    list-style: none;
+    padding: 0;
+  }
+  .services-list li {
+    padding: 0.45rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+    font-size: 0.92rem;
+    color: #2a2a3e;
+    line-height: 1.45;
+    border-bottom: 1px solid #f5f5f8;
+  }
+  .services-list li:last-child { border-bottom: none; }
+  .services-list li::before {
+    content: '▸';
+    position: absolute;
+    left: 0;
+    color: #A9955C;
+    font-size: 0.75rem;
+    top: 0.55rem;
+  }
+  .tools-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+  .tool-tag {
+    background: #f0f2f5;
+    color: #444;
+    border-radius: 20px;
+    padding: 0.25rem 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    border: 1px solid #e0e2ea;
+  }
+  .card:nth-child(1) .tool-tag { border-color: #c5ccf8; color: #3150cc; background: #eef0fd; }
+  .card:nth-child(2) .tool-tag { border-color: #a0dce8; color: #007a94; background: #e8f8fc; }
+  .card:nth-child(3) .tool-tag { border-color: #d4c4a0; color: #7a6830; background: #fdf8ee; }
+  footer {
+    text-align: center;
+    padding: 2rem;
+    color: #aaa;
+    font-size: 0.8rem;
+  }
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.7rem; }
+    .cards { padding: 1rem; gap: 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Team Data</h1>
+  <div class="subtitle">Marketing &amp; Communicatie &mdash; Maastricht University</div>
+</header>
+
+<div class="cards">
+
+  <!-- ONLINE MARKETING -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📣</div>
+      <h2>Online Marketing</h2>
+      <div class="tagline">Adverteren, zichtbaarheid &amp; monitoring</div>
+    </div>
+    <div class="card-when">
+      <strong>Wanneer heb je dit nodig?</strong>
+      Als jij je doelgroep wil bereiken en volgen via digitale kanalen
+    </div>
+    <div class="card-body">
+      <h3>Diensten</h3>
+      <ul class="services-list">
+        <li>Advies, uitvoering en optimalisatie van online paid campaigns (Google, LinkedIn, Meta)</li>
+        <li>Strategie voor zichtbaarheid en doelgroepbenadering</li>
+        <li>Contentplanning, productie en advies voor social media</li>
+        <li>Online monitoring van merk, thema's, sentiment en risico's</li>
+        <li>SEO &amp; GEO optimalisatie</li>
+        <li>Implementatie van tools zoals GTM en Cookiebot</li>
+      </ul>
+      <h3>Tools</h3>
+      <div class="tools-tags">
+        <span class="tool-tag">Google Ads</span>
+        <span class="tool-tag">Meta Ads</span>
+        <span class="tool-tag">LinkedIn Ads</span>
+        <span class="tool-tag">GTM</span>
+        <span class="tool-tag">Google Analytics</span>
+        <span class="tool-tag">Coosto</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA ANALYSE -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">📊</div>
+      <h2>Data Analyse</h2>
+      <div class="tagline">Inzichten &amp; rapportage</div>
+    </div>
+    <div class="card-when">
+      <strong>Wanneer heb je dit nodig?</strong>
+      Als jij inzicht wil in gedrag, prestaties of conversie van je marketingactiviteiten
+    </div>
+    <div class="card-body">
+      <h3>Diensten</h3>
+      <ul class="services-list">
+        <li>Dashboards en rapportages</li>
+        <li>Analyse van bezoekersgedrag, campagnes en funnels</li>
+        <li>Advies over segmentatie, conversie, kanaalrendement</li>
+        <li>UX-analyse en gebruikersonderzoek</li>
+        <li>GDPR-compliancy en cookiemanagement</li>
+      </ul>
+      <h3>Tools</h3>
+      <div class="tools-tags">
+        <span class="tool-tag">PowerBI</span>
+        <span class="tool-tag">Looker Studio</span>
+        <span class="tool-tag">Google Analytics</span>
+        <span class="tool-tag">Cookiebot</span>
+        <span class="tool-tag">Clarity</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRM -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon">🤝</div>
+      <h2>CRM</h2>
+      <div class="tagline">Datagedreven contactbeheer</div>
+    </div>
+    <div class="card-when">
+      <strong>Wanneer heb je dit nodig?</strong>
+      Als jij doelgroepinteracties wil vastleggen en automatiseren
+    </div>
+    <div class="card-body">
+      <h3>Diensten</h3>
+      <ul class="services-list">
+        <li>Advies over CRM/CDP voor segmentatie, leadopvolging en communicatie</li>
+        <li>Inrichten van marketing automations</li>
+        <li>Kenniscentrum voor datastrategie en modellen</li>
+        <li>Begeleiding bij MarTech-implementaties</li>
+        <li>Koppeling M&amp;C systemen/processen</li>
+      </ul>
+      <h3>Tools</h3>
+      <div class="tools-tags">
+        <span class="tool-tag">MS Dynamics</span>
+        <span class="tool-tag">BlueConic</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  Team Data &mdash; M&amp;C Maastricht University &mdash; 2026
+</footer>
+
+</body>
+</html>
