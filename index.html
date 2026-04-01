@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UM Digital Innovation — Presentations</title>
+    <style>
+        :root {
+            --um-staalblauw: #000831;
+            --um-perzikoranje: #EA7C69;
+            --um-gebroken-wit: #FCFCFC;
+            --um-zachtblauw: #BEDDF7;
+        }
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: Aptos, 'GT Standard', Calibri, system-ui, sans-serif;
+            background: var(--um-staalblauw);
+            color: var(--um-gebroken-wit);
+            min-height: 100vh;
+            padding: 60px 40px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        header {
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            color: var(--um-perzikoranje);
+            font-size: 1.1rem;
+        }
+        
+        .presentations {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .presentation-card {
+            background: rgba(190, 221, 247, 0.1);
+            border: 1px solid rgba(190, 221, 247, 0.2);
+            border-radius: 12px;
+            padding: 25px 30px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+        }
+        
+        .presentation-card:hover {
+            background: rgba(190, 221, 247, 0.2);
+            border-color: var(--um-perzikoranje);
+            transform: translateX(10px);
+        }
+        
+        .presentation-card h2 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--um-zachtblauw);
+        }
+        
+        .presentation-card:hover h2 {
+            color: var(--um-perzikoranje);
+        }
+        
+        .presentation-card .meta {
+            font-size: 0.9rem;
+            opacity: 0.7;
+        }
+        
+        .presentation-card .description {
+            margin-top: 10px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        footer {
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(190, 221, 247, 0.2);
+            font-size: 0.85rem;
+            opacity: 0.6;
+        }
+        
+        footer a {
+            color: var(--um-perzikoranje);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>UM Digital Innovation</h1>
+            <p class="subtitle">Presentations & Slide Decks</p>
+        </header>
+        
+        <div class="presentations">
+            <a href="presentation.html" class="presentation-card">
+                <h2>Digital Innovation — Update for Team Leaders</h2>
+                <p class="meta">April 3, 2026 • M&C Team Leaders Meeting</p>
+                <p class="description">
+                    Progress update on the DI initiative: AI Findability project kickoff, 
+                    Innovation Hub concept, and timeline for Q2 2026.
+                </p>
+            </a>
+            
+            <!-- Future presentations will be added here -->
+        </div>
+        
+        <footer>
+            Digital Innovation • Marketing & Communication • <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
+        </footer>
+    </div>
+</body>
+</html>
