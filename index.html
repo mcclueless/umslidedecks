@@ -4,198 +4,923 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>UM Digital Innovation — Presentations</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Cinzel:wght@400;600;700&family=Cinzel+Decorative:wght@700&display=swap" rel="stylesheet">
+
     <style>
         :root {
-            --um-staalblauw: #000831;
-            --um-perzikoranje: #EA7C69;
-            --um-gebroken-wit: #FCFCFC;
-            --um-zachtblauw: #BEDDF7;
-            --um-botergeel: #F1E798;
-            --um-tealgroen: #0F7564;
+            --parchment:      #f0e0b0;
+            --parchment-mid:  #e0cc94;
+            --parchment-dark: #c8b070;
+            --ink:            #1e1008;
+            --ink-faded:      #3e2c14;
+            --red:            #8b1515;
+            --red-light:      #b02020;
+            --gold:           #b07800;
+            --gold-light:     #d4a020;
+            --royal-blue:     #14286a;
+            --dragon-green:   #285038;
+            --dragon-light:   #3c7050;
+            --dragon-dark:    #142818;
+            --wing-red:       #602010;
+            --wing-mid:       #883018;
         }
-        
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
-            font-family: Aptos, 'GT Standard', Calibri, system-ui, sans-serif;
-            background: var(--um-staalblauw);
-            color: var(--um-gebroken-wit);
+            font-family: 'Cinzel', Georgia, 'Times New Roman', serif;
+            background-color: var(--parchment);
+            color: var(--ink);
             min-height: 100vh;
-            padding: 60px 40px;
+            overflow-x: hidden;
+            padding-bottom: 70px; /* room for scroll banner */
         }
-        
-        .container {
-            max-width: 1000px;
+
+        /* Vellum grain overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.12'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Dragon canvas — full viewport, above everything */
+        #dragonCanvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 200;
+        }
+
+        /* Pretext-powered scroll banner */
+        #scrollCanvas {
+            position: fixed;
+            bottom: 0; left: 0;
+            width: 100%;
+            height: 60px;
+            pointer-events: none;
+            z-index: 150;
+        }
+
+        /* ── Page layout ────────────────────────────────── */
+        .page {
+            position: relative;
+            z-index: 10;
+            max-width: 960px;
             margin: 0 auto;
+            padding: 48px 32px;
         }
-        
-        header {
-            margin-bottom: 50px;
+
+        /* Outer double-rule frame */
+        .manuscript {
+            border: 2px solid var(--ink);
+            box-shadow:
+                0 0 0 6px var(--parchment),
+                0 0 0 8px var(--gold),
+                0 0 0 12px var(--parchment),
+                0 0 0 14px var(--red);
+            padding: 44px 48px 36px;
+            background:
+                linear-gradient(160deg, rgba(180,130,50,.12) 0%, transparent 40%),
+                linear-gradient(340deg, rgba(180,130,50,.10) 0%, transparent 40%);
+            position: relative;
         }
-        
+
+        /* Corner knots */
+        .manuscript .corner {
+            position: absolute;
+            width: 40px; height: 40px;
+            color: var(--red);
+            font-size: 2rem;
+            line-height: 1;
+        }
+        .manuscript .corner.tl { top: -6px;  left: -6px;  }
+        .manuscript .corner.tr { top: -6px;  right: -6px; transform: scaleX(-1); }
+        .manuscript .corner.bl { bottom: -6px; left: -6px; transform: scaleY(-1); }
+        .manuscript .corner.br { bottom: -6px; right: -6px; transform: scale(-1,-1); }
+
+        /* Each wrapped letter — inline-block so transform works on inline text */
+        .letter { display: inline-block; will-change: transform; }
+
+        /* ── Header ─────────────────────────────────────── */
+        .ms-header {
+            text-align: center;
+            margin-bottom: 36px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--gold);
+            position: relative;
+        }
+
+        .ms-header::after {
+            content: '✦  ✦  ✦';
+            display: block;
+            color: var(--red);
+            font-size: 1rem;
+            letter-spacing: 0.5rem;
+            margin-top: 14px;
+        }
+
+        .drop-cap {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 5.5rem;
+            line-height: 0.8;
+            float: left;
+            margin: 4px 10px -4px 0;
+            color: var(--royal-blue);
+            text-shadow: 3px 3px 0 var(--gold);
+            padding: 6px 10px 4px;
+            border: 3px solid var(--gold);
+            background: rgba(176, 120, 0, 0.09);
+        }
+
         h1 {
-            font-size: 2.5rem;
-            font-weight: 300;
+            font-family: 'Cinzel Decorative', 'Cinzel', Georgia, serif;
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--red);
+            line-height: 1.2;
             margin-bottom: 10px;
+            text-align: left;
         }
-        
+
         .subtitle {
-            color: var(--um-perzikoranje);
-            font-size: 1.1rem;
-        }
-        
-        h2 {
-            font-size: 1.1rem;
-            font-weight: 400;
-            color: var(--um-botergeel);
-            margin: 40px 0 20px 0;
+            font-size: 0.85rem;
+            color: var(--ink-faded);
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            text-align: left;
+            padding-left: 5.5rem; /* clear of drop-cap */
         }
-        
-        .presentations {
+
+        /* ── Section rubrics ─────────────────────────────── */
+        h2 {
+            font-family: 'UnifrakturMaguntia', cursive;
+            font-size: 1.65rem;
+            color: var(--red);
+            margin: 36px 0 14px;
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            align-items: center;
+            gap: 10px;
         }
-        
+
+        h2::before { content: '¶'; color: var(--gold); font-size: 1.2rem; }
+
+        h2::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--red) 0%, transparent 100%);
+            margin-left: 6px;
+        }
+
+        /* ── Presentation cards as manuscript entries ─────── */
+        .presentations { display: flex; flex-direction: column; gap: 10px; }
+
         .presentation-card {
-            background: rgba(190, 221, 247, 0.1);
-            border: 1px solid rgba(190, 221, 247, 0.2);
-            border-radius: 12px;
-            padding: 20px 25px;
+            background: linear-gradient(to right, rgba(176,120,0,.07), transparent 60%);
+            border: 1px solid var(--parchment-dark);
+            border-left: 5px solid var(--gold);
+            padding: 14px 18px;
             text-decoration: none;
             color: inherit;
-            transition: all 0.3s ease;
+            transition: all 0.25s ease;
+            position: relative;
         }
-        
+
+        .presentation-card::before {
+            content: '◆';
+            position: absolute;
+            left: -14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gold);
+            font-size: 0.7rem;
+        }
+
         .presentation-card:hover {
-            background: rgba(190, 221, 247, 0.2);
-            border-color: var(--um-perzikoranje);
-            transform: translateX(10px);
+            background: linear-gradient(to right, rgba(139,21,21,.07), transparent 60%);
+            border-left-color: var(--red);
+            transform: translateX(8px);
         }
-        
+
+        .presentation-card:hover::before { color: var(--red); }
+
         .presentation-card h3 {
-            font-size: 1.15rem;
-            font-weight: 500;
-            margin-bottom: 6px;
-            color: var(--um-zachtblauw);
+            font-family: 'Cinzel', serif;
+            font-size: 0.97rem;
+            font-weight: 700;
+            color: var(--royal-blue);
+            margin-bottom: 4px;
         }
-        
-        .presentation-card:hover h3 {
-            color: var(--um-perzikoranje);
-        }
-        
+
+        .presentation-card:hover h3 { color: var(--red); }
+
         .presentation-card .meta {
-            font-size: 0.85rem;
-            opacity: 0.7;
+            font-family: Georgia, serif;
+            font-size: 0.78rem;
+            color: var(--ink-faded);
+            font-style: italic;
         }
-        
+
         .presentation-card .description {
-            margin-top: 8px;
-            font-size: 0.9rem;
-            line-height: 1.4;
+            margin-top: 5px;
+            font-family: Georgia, 'Times New Roman', serif;
+            font-size: 0.84rem;
+            line-height: 1.5;
+            color: var(--ink);
         }
-        
+
         .variant {
             display: inline-block;
-            background: rgba(15, 117, 100, 0.3);
-            color: var(--um-gebroken-wit);
-            font-size: 0.75rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-left: 10px;
+            background: rgba(139,21,21,.12);
+            color: var(--red);
+            font-size: 0.68rem;
+            padding: 1px 6px;
+            border: 1px solid var(--red);
+            margin-left: 8px;
+            font-family: 'Cinzel', serif;
+            letter-spacing: 0.04em;
         }
-        
+
+        /* ── Footer ─────────────────────────────────────── */
         footer {
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(190, 221, 247, 0.2);
-            font-size: 0.85rem;
-            opacity: 0.6;
+            margin-top: 28px;
+            padding-top: 16px;
+            border-top: 1px solid var(--parchment-dark);
+            font-family: Georgia, serif;
+            font-size: 0.78rem;
+            color: var(--ink-faded);
+            font-style: italic;
+            text-align: center;
         }
-        
-        footer a {
-            color: var(--um-perzikoranje);
+
+        footer a { color: var(--red); }
+
+        .footer-ornament {
+            display: block;
+            font-size: 1.3rem;
+            color: var(--gold);
+            letter-spacing: 0.8rem;
+            margin-top: 8px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>UM Digital Innovation</h1>
-            <p class="subtitle">Presentations & Slide Decks</p>
-        </header>
-        
-        <h2>Team & Strategy</h2>
-        <div class="presentations">
-            <a href="presentation.html" class="presentation-card">
-                <h3>Digital Innovation — Update for Team Leaders</h3>
-                <p class="meta">April 3, 2026 • M&C Team Leaders Meeting</p>
-                <p class="description">AI Findability project kickoff, Innovation Hub concept, timeline Q2 2026.</p>
-            </a>
-            
-            <a href="di-ideas-2026/presentation.html" class="presentation-card">
-                <h3>DI Ideas 2026 — M&C Hoofddoelstellingen</h3>
-                <p class="meta">February 2026 • Team Planning</p>
-                <p class="description">32 ideas clustered by M&C strategic objectives: positioning, recruitment, internal comms, reputation.</p>
-            </a>
-            
-            <a href="team-data/presentation.html" class="presentation-card">
-                <h3>Team Data — Diensten Overzicht</h3>
-                <p class="meta">2026 • Internal Reference</p>
-                <p class="description">Overview of Team Data services and capabilities.</p>
-            </a>
-        </div>
-        
-        <h2>Ralph AI Assistant</h2>
-        <div class="presentations">
-            <a href="ralph-cio/presentation.html" class="presentation-card">
-                <h3>Ralph: AI Assistant Pilot — CIO Presentation</h3>
-                <p class="meta">2026 • CIO/IT Leadership</p>
-                <p class="description">Pilot results and architecture overview for IT leadership.</p>
-            </a>
-            
-            <a href="ralph-cio/armin-style.html" class="presentation-card">
-                <h3>Ralph — AI Assistant Pilot <span class="variant">Armin Style</span></h3>
-                <p class="meta">2026 • Alternative Design</p>
-                <p class="description">Same content, alternative visual style.</p>
-            </a>
-        </div>
-        
-        <h2>The Invisible Student (AI & Recruitment)</h2>
-        <div class="presentations">
-            <a href="invisible-student/presentation.html" class="presentation-card">
-                <h3>The Invisible Student — Full Presentation</h3>
-                <p class="meta">2026 • M&C Strategy</p>
-                <p class="description">How AI is changing student recruitment: the shift from search to answers.</p>
-            </a>
-            
-            <a href="invisible-student/part2-condensed.html" class="presentation-card">
-                <h3>Reverse Engineering the Invisible Student <span class="variant">Part 2 Condensed</span></h3>
-                <p class="meta">2026 • Deep Dive</p>
-                <p class="description">2x2 framework for categorizing prospective student questions to AI tools.</p>
-            </a>
-        </div>
-        
-        <h2>Digital Sovereignty</h2>
-        <div class="presentations">
-            <a href="digital-sovereignty/presentation.html" class="presentation-card">
-                <h3>DSDD — Digital Sovereignty</h3>
-                <p class="meta">2026 • Policy & Strategy</p>
-                <p class="description">Digital sovereignty and data governance framework.</p>
-            </a>
-            
-            <a href="digital-sovereignty/hrdd-presentation.html" class="presentation-card">
-                <h3>DSDD + HRDD Integration</h3>
-                <p class="meta">2026 • Extended Framework</p>
-                <p class="description">Integration with Human Rights Due Diligence requirements.</p>
-            </a>
-        </div>
-        
-        <footer>
-            Digital Innovation • Marketing & Communication • <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
-        </footer>
+
+<!-- Dragon flies over everything -->
+<canvas id="dragonCanvas"></canvas>
+
+<!-- Pretext-powered illuminated scroll at bottom -->
+<canvas id="scrollCanvas"></canvas>
+
+<div class="page">
+  <div class="manuscript">
+    <!-- Corner knot decorations -->
+    <span class="corner tl">❧</span>
+    <span class="corner tr">❧</span>
+    <span class="corner bl">❧</span>
+    <span class="corner br">❧</span>
+
+    <header class="ms-header">
+      <h1><span class="drop-cap">U</span>M Digital Innovation</h1>
+      <p class="subtitle">✦ Presentations &amp; Slide Decks ✦</p>
+    </header>
+
+    <h2>Team &amp; Strategy</h2>
+    <div class="presentations">
+      <a href="presentation.html" class="presentation-card">
+        <h3>Digital Innovation — Update for Team Leaders</h3>
+        <p class="meta">April 3, 2026 · M&amp;C Team Leaders Meeting</p>
+        <p class="description">AI Findability project kickoff, Innovation Hub concept, timeline Q2 2026.</p>
+      </a>
+      <a href="di-ideas-2026/presentation.html" class="presentation-card">
+        <h3>DI Ideas 2026 — M&amp;C Hoofddoelstellingen</h3>
+        <p class="meta">February 2026 · Team Planning</p>
+        <p class="description">32 ideas clustered by M&amp;C strategic objectives: positioning, recruitment, internal comms, reputation.</p>
+      </a>
+      <a href="team-data/presentation.html" class="presentation-card">
+        <h3>Team Data — Diensten Overzicht</h3>
+        <p class="meta">2026 · Internal Reference</p>
+        <p class="description">Overview of Team Data services and capabilities.</p>
+      </a>
     </div>
+
+    <h2>Ralph AI Assistant</h2>
+    <div class="presentations">
+      <a href="ralph-cio/presentation.html" class="presentation-card">
+        <h3>Ralph: AI Assistant Pilot — CIO Presentation</h3>
+        <p class="meta">2026 · CIO/IT Leadership</p>
+        <p class="description">Pilot results and architecture overview for IT leadership.</p>
+      </a>
+      <a href="ralph-cio/armin-style.html" class="presentation-card">
+        <h3>Ralph — AI Assistant Pilot <span class="variant">Armin Style</span></h3>
+        <p class="meta">2026 · Alternative Design</p>
+        <p class="description">Same content, alternative visual style.</p>
+      </a>
+    </div>
+
+    <h2>The Invisible Student</h2>
+    <div class="presentations">
+      <a href="invisible-student/presentation.html" class="presentation-card">
+        <h3>The Invisible Student — Full Presentation</h3>
+        <p class="meta">2026 · M&amp;C Strategy</p>
+        <p class="description">How AI is changing student recruitment: the shift from search to answers.</p>
+      </a>
+      <a href="invisible-student/part2-condensed.html" class="presentation-card">
+        <h3>Reverse Engineering the Invisible Student <span class="variant">Part 2 Condensed</span></h3>
+        <p class="meta">2026 · Deep Dive</p>
+        <p class="description">2×2 framework for categorizing prospective student questions to AI tools.</p>
+      </a>
+    </div>
+
+    <h2>Digital Sovereignty</h2>
+    <div class="presentations">
+      <a href="digital-sovereignty/presentation.html" class="presentation-card">
+        <h3>DSDD — Digital Sovereignty</h3>
+        <p class="meta">2026 · Policy &amp; Strategy</p>
+        <p class="description">Digital sovereignty and data governance framework.</p>
+      </a>
+      <a href="digital-sovereignty/hrdd-presentation.html" class="presentation-card">
+        <h3>DSDD + HRDD Integration</h3>
+        <p class="meta">2026 · Extended Framework</p>
+        <p class="description">Integration with Human Rights Due Diligence requirements.</p>
+      </a>
+    </div>
+
+    <footer>
+      Digital Innovation · Marketing &amp; Communication ·
+      <a href="https://www.maastrichtuniversity.nl">Maastricht University</a>
+      <span class="footer-ornament">✦ ✦ ✦</span>
+    </footer>
+  </div>
+</div>
+
+<script type="module">
+// ═══════════════════════════════════════════════════════════════════════
+//  pretext — precise Unicode-aware character layout for the scroll banner
+//  https://github.com/chenglou/pretext
+// ═══════════════════════════════════════════════════════════════════════
+import { prepareWithSegments, layoutNextLine } from
+  'https://cdn.jsdelivr.net/npm/@chenglou/pretext@0.0.4/dist/layout.js';
+
+// ─── Scroll banner ────────────────────────────────────────────────────
+const scrollCanvas = document.getElementById('scrollCanvas');
+const sctx = scrollCanvas.getContext('2d');
+
+const SCROLL_H = 60;
+const SCROLL_FONT_NORMAL = 'italic 17px "Cinzel", Georgia, serif';
+const SCROLL_FONT_BOLD   = 'bold italic 17px "Cinzel", Georgia, serif';
+
+// Medieval Latin text for the scroll
+const RAW_TEXT =
+  'Universitas Trajectensis  ·  Hic Svnt Dracones  ·  Anno Domini MMXXVI  ·  ' +
+  'In Nomine Innovationis Digitalis  ·  Maastricht  ·  Ars Longa Vita Brevis  ·  ';
+const SCROLL_TEXT = RAW_TEXT.repeat(4);  // long enough for seamless loop
+
+function resizeScrollCanvas() {
+  scrollCanvas.width  = window.innerWidth;
+  scrollCanvas.height = SCROLL_H;
+}
+resizeScrollCanvas();
+
+// Use pretext to layout the full scroll text as one very-wide line,
+// giving us the correct grapheme-cluster segmentation for Unicode text.
+// Then we walk char-by-char with canvas measureText for per-glyph x positions
+// (mirroring the approach in the pretext variable-typographic-ascii demo).
+let scrollChars = [];   // [{char, x, bold}]
+let scrollTotal = 0;    // total pixel width of the loop
+
+function buildScrollLayout() {
+  scrollChars = [];
+  // prepareWithSegments handles emoji, bidi, and complex scripts correctly
+  const prepared = prepareWithSegments(SCROLL_TEXT, SCROLL_FONT_NORMAL);
+  let cursor = { segmentIndex: 0, graphemeIndex: 0 };
+  // layoutNextLine with enormous width → returns the whole text as one line
+  const line = layoutNextLine(prepared, cursor, 1_000_000);
+  if (!line) return;
+
+  // Walk each grapheme in line.text; measure width in the right font
+  let x = 0;
+  for (const ch of line.text) {       // spread handles multi-codepoint clusters
+    const isUpper = ch === ch.toUpperCase() && ch.trim() !== '' && ch !== '·';
+    const isSep   = ch === '·';
+    const font    = isUpper ? SCROLL_FONT_BOLD : SCROLL_FONT_NORMAL;
+    sctx.font = font;
+    const w = sctx.measureText(ch).width;
+    scrollChars.push({ char: ch, x, width: w, isUpper, isSep });
+    x += w;
+  }
+  scrollTotal = x;
+}
+buildScrollLayout();
+
+let scrollOffset = 0;
+const SCROLL_SPEED = 1.1;   // px per frame
+
+function drawScroll() {
+  sctx.clearRect(0, 0, scrollCanvas.width, SCROLL_H);
+
+  // Parchment background
+  const bg = sctx.createLinearGradient(0, 0, 0, SCROLL_H);
+  bg.addColorStop(0,   'rgba(200,165,80, 0.97)');
+  bg.addColorStop(0.4, 'rgba(220,185,100,0.99)');
+  bg.addColorStop(1,   'rgba(200,165,80, 0.97)');
+  sctx.fillStyle = bg;
+  sctx.fillRect(0, 0, scrollCanvas.width, SCROLL_H);
+
+  // Ruling lines (like a medieval manuscript)
+  sctx.lineWidth = 1.5;
+  for (const [y, color] of [[2,'#8b1515'],[4,'#b07800'],[56,'#b07800'],[58,'#8b1515']]) {
+    sctx.strokeStyle = color;
+    sctx.beginPath(); sctx.moveTo(0,y); sctx.lineTo(scrollCanvas.width,y); sctx.stroke();
+  }
+
+  // Advance offset
+  scrollOffset = (scrollOffset + SCROLL_SPEED) % (scrollTotal / 2);
+  // We used repeat(4) so half the total is one full loop of RAW_TEXT×2
+
+  // Draw each character at its pretext-computed position
+  sctx.textBaseline = 'middle';
+  for (const { char, x, isUpper, isSep } of scrollChars) {
+    const drawX = ((x - scrollOffset + scrollTotal) % scrollTotal) - 20;
+    if (drawX < -40 || drawX > scrollCanvas.width + 40) continue;
+
+    if (isSep) {
+      sctx.font      = SCROLL_FONT_BOLD;
+      sctx.fillStyle = '#b07800';              // gold separators
+    } else if (isUpper) {
+      sctx.font      = SCROLL_FONT_BOLD;
+      sctx.fillStyle = '#8b1515';              // red rubricated capitals
+    } else {
+      sctx.font      = SCROLL_FONT_NORMAL;
+      sctx.fillStyle = '#1e1008';              // dark ink for minuscules
+    }
+    sctx.fillText(char, drawX, SCROLL_H / 2);
+  }
+}
+
+window.addEventListener('resize', () => {
+  resizeScrollCanvas();
+  buildScrollLayout();
+});
+
+// ─── Dragon canvas ────────────────────────────────────────────────────
+const dc = document.getElementById('dragonCanvas');
+const ctx = dc.getContext('2d');
+
+function resizeDragonCanvas() {
+  dc.width  = window.innerWidth;
+  dc.height = window.innerHeight;
+}
+resizeDragonCanvas();
+window.addEventListener('resize', resizeDragonCanvas);
+
+// Fire particle pool
+const flames = [];
+function spawnFlame(mx, my, dir) {
+  for (let i = 0; i < 4; i++) {
+    flames.push({
+      x:    mx + dir * 20,
+      y:    my + (Math.random() - 0.5) * 12,
+      vx:   dir * (4 + Math.random() * 7),
+      vy:   (Math.random() - 0.5) * 4 - 0.5,
+      life: 0.9 + Math.random() * 0.4,
+      r:    6 + Math.random() * 10,
+    });
+  }
+}
+function tickFlames() {
+  for (let i = flames.length - 1; i >= 0; i--) {
+    const f = flames[i];
+    f.x    += f.vx;
+    f.y    += f.vy;
+    f.vy   -= 0.12;
+    f.life -= 0.035;
+    f.r    *= 0.97;
+    if (f.life <= 0) flames.splice(i, 1);
+  }
+}
+function drawFlames() {
+  for (const f of flames) {
+    const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r);
+    g.addColorStop(0,   `rgba(255,230,80,${f.life})`);
+    g.addColorStop(0.4, `rgba(255,120,0,${f.life * 0.8})`);
+    g.addColorStop(1,   'rgba(255,40,0,0)');
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+}
+
+// ── Dragon drawing (heraldic medieval style) ──────────────────────────
+function drawDragon(cx, cy, t) {
+  // direction from velocity sign on previous frame
+  const angle    = t * 0.38;
+  const dx       = -Math.sin(angle);   // derivative of x
+  const dir      = dx >= 0 ? 1 : -1;  // 1 = faces right
+
+  const wing  = Math.sin(t * 4.5) * 0.75;      // wing flap −1…1
+  const sway  = Math.sin(t * 2.2) * 0.18;       // body sway
+  const swayY = sway * 10;
+
+  ctx.save();
+  ctx.translate(cx, cy);
+  if (dir < 0) ctx.scale(-1, 1);   // flip so dragon always faces travel direction
+
+  const S  = 1.1;    // overall scale multiplier
+  const DG = '#285038';   // dragon green body
+  const DL = '#3a7048';   // dragon light
+  const DD = '#142818';   // dragon dark
+  const WR = '#601808';   // wing red
+  const WM = '#8a3010';   // wing mid
+  const GO = '#c08808';   // gold
+
+  // ── Tail (drawn behind body) ─────────────────────────────────────
+  ctx.lineWidth = 11 * S;
+  ctx.strokeStyle = DD;
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(-52 * S, 6 * S + swayY);
+  ctx.bezierCurveTo(
+    -80 * S,  16 * S + swayY * 1.6,
+    -110 * S, 4 * S  + swayY * 0.4,
+    -122 * S, 22 * S + swayY * 2.2
+  );
+  ctx.stroke();
+
+  // Arrow-tip on tail
+  ctx.save();
+  ctx.translate(-122 * S, 22 * S + swayY * 2.2);
+  ctx.rotate(0.55);
+  ctx.beginPath();
+  ctx.moveTo(0, -11 * S);
+  ctx.lineTo(11 * S, 8 * S);
+  ctx.lineTo(-11 * S, 8 * S);
+  ctx.closePath();
+  ctx.fillStyle = DD;
+  ctx.fill();
+  ctx.restore();
+
+  // ── Dorsal spines ────────────────────────────────────────────────
+  for (let i = 0; i < 5; i++) {
+    const sx = (-32 + i * 16) * S;
+    const h  = (14 - Math.abs(i - 2) * 2) * S;
+    ctx.beginPath();
+    ctx.moveTo(sx - 4 * S, -14 * S + swayY * (1 - i * 0.15));
+    ctx.lineTo(sx,          -14 * S - h + swayY * (1 - i * 0.15));
+    ctx.lineTo(sx + 4 * S, -14 * S + swayY * (1 - i * 0.15));
+    ctx.fillStyle = DD;
+    ctx.fill();
+  }
+
+  // ── Wings ────────────────────────────────────────────────────────
+  // Upper wing (primary)
+  const wTopY = (-30 - wing * 55) * S;
+  const wTipX = (95 + wing * 8)   * S;
+  const wTipY = (-20 + wing * -25) * S + swayY;
+
+  ctx.beginPath();
+  ctx.moveTo(-18 * S, -14 * S + swayY);
+  ctx.bezierCurveTo(
+    10 * S,  wTopY + swayY,
+    wTipX,   wTipY,
+    wTipX,   8 * S + swayY
+  );
+  ctx.bezierCurveTo(
+    70 * S,  18 * S + swayY,
+    20 * S,  6 * S  + swayY,
+    -18 * S, -14 * S + swayY
+  );
+  const wg1 = ctx.createLinearGradient(-18 * S, wTopY, wTipX, 8 * S);
+  wg1.addColorStop(0, WM);
+  wg1.addColorStop(1, WR);
+  ctx.fillStyle = wg1;
+  ctx.fill();
+  ctx.strokeStyle = DD;
+  ctx.lineWidth = 1.5 * S;
+  ctx.stroke();
+
+  // Wing membrane veins
+  ctx.strokeStyle = 'rgba(0,0,0,0.18)';
+  ctx.lineWidth = 1 * S;
+  for (let v = 1; v <= 4; v++) {
+    const frac = v / 5;
+    ctx.beginPath();
+    ctx.moveTo(-18 * S, -14 * S + swayY);
+    ctx.lineTo(
+      (-18 + (wTipX / S + 18) * frac) * S,
+      (-14 + (22) * frac) * S + swayY
+    );
+    ctx.stroke();
+  }
+
+  // Lower wing (counter-phase)
+  const lw = Math.sin(t * 4.5 + Math.PI * 0.8) * 0.5;
+  ctx.beginPath();
+  ctx.moveTo(-18 * S, 10 * S + swayY);
+  ctx.bezierCurveTo(
+     8 * S, (18 + lw * 45) * S + swayY,
+    55 * S, (24 + lw * 50) * S + swayY,
+    62 * S, 16 * S + swayY
+  );
+  ctx.bezierCurveTo(
+    48 * S, 12 * S + swayY,
+    14 * S, 10 * S + swayY,
+    -18 * S, 10 * S + swayY
+  );
+  ctx.fillStyle = WR;
+  ctx.fill();
+  ctx.strokeStyle = DD;
+  ctx.lineWidth = 1.5 * S;
+  ctx.stroke();
+
+  // ── Body ─────────────────────────────────────────────────────────
+  ctx.beginPath();
+  ctx.ellipse(-8 * S, 4 * S + swayY, 55 * S, 22 * S, 0.08, 0, Math.PI * 2);
+  const bg2 = ctx.createRadialGradient(-8 * S, -6 * S + swayY, 4, -8 * S, 4 * S + swayY, 55 * S);
+  bg2.addColorStop(0, DL);
+  bg2.addColorStop(1, DG);
+  ctx.fillStyle = bg2;
+  ctx.fill();
+  ctx.strokeStyle = DD;
+  ctx.lineWidth = 2 * S;
+  ctx.stroke();
+
+  // Belly scales (lighter patch)
+  ctx.beginPath();
+  ctx.ellipse(-4 * S, 14 * S + swayY, 36 * S, 12 * S, 0.08, 0, Math.PI);
+  ctx.fillStyle = 'rgba(190,140,70,0.35)';
+  ctx.fill();
+
+  // ── Head ─────────────────────────────────────────────────────────
+  ctx.beginPath();
+  ctx.ellipse(52 * S, -6 * S + swayY, 26 * S, 18 * S, -0.12, 0, Math.PI * 2);
+  ctx.fillStyle = DG;
+  ctx.fill();
+  ctx.strokeStyle = DD;
+  ctx.lineWidth = 2 * S;
+  ctx.stroke();
+
+  // Snout ridge
+  ctx.beginPath();
+  ctx.ellipse(75 * S, 2 * S + swayY, 13 * S, 8 * S, 0.28, 0, Math.PI * 2);
+  ctx.fillStyle = DD;
+  ctx.fill();
+  ctx.stroke();
+
+  // Upper jaw
+  ctx.beginPath();
+  ctx.moveTo(63 * S, -4 * S + swayY);
+  ctx.bezierCurveTo(76 * S, -7 * S + swayY, 91 * S, -4 * S + swayY, 90 * S, 3 * S + swayY);
+  ctx.bezierCurveTo(87 * S,  9 * S + swayY, 73 * S, 10 * S + swayY, 63 * S, 4 * S + swayY);
+  ctx.closePath();
+  ctx.fillStyle = DG;
+  ctx.fill();
+  ctx.stroke();
+
+  // Lower jaw (slightly agape — medieval dragons always look hungry)
+  ctx.beginPath();
+  ctx.moveTo(64 * S, 5 * S + swayY);
+  ctx.bezierCurveTo(72 * S, 14 * S + swayY, 87 * S, 15 * S + swayY, 89 * S, 10 * S + swayY);
+  ctx.bezierCurveTo(85 * S,  6 * S + swayY, 74 * S,  5 * S + swayY, 64 * S,  5 * S + swayY);
+  ctx.closePath();
+  ctx.fillStyle = '#501008';
+  ctx.fill();
+  ctx.stroke();
+
+  // Tongue
+  ctx.beginPath();
+  ctx.moveTo(80 * S,  8 * S + swayY);
+  ctx.bezierCurveTo(90 * S, 10 * S + swayY, 98 * S, 7 * S + swayY, 97 * S, 5 * S + swayY);
+  ctx.strokeStyle = '#cc1818';
+  ctx.lineWidth = 2.5 * S;
+  ctx.lineCap = 'round';
+  ctx.stroke();
+
+  // Nostril
+  ctx.beginPath();
+  ctx.arc(82 * S, -1 * S + swayY, 2.2 * S, 0, Math.PI * 2);
+  ctx.fillStyle = DD;
+  ctx.fill();
+
+  // Eye (gold iris, black slit pupil, highlight)
+  ctx.beginPath();
+  ctx.arc(57 * S, -10 * S + swayY, 6.5 * S, 0, Math.PI * 2);
+  ctx.fillStyle = GO;
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(57 * S, -10 * S + swayY, 3.8 * S, 0, Math.PI * 2);
+  ctx.fillStyle = '#0a0a0a';
+  ctx.fill();
+  ctx.beginPath();
+  ctx.arc(59 * S, -11.5 * S + swayY, 1.8 * S, 0, Math.PI * 2);
+  ctx.fillStyle = 'rgba(255,255,255,0.75)';
+  ctx.fill();
+
+  // Horns (gold, curved back)
+  ctx.fillStyle = GO;
+  ctx.strokeStyle = '#806000';
+  ctx.lineWidth = 1.5 * S;
+  [[42, -20, 36, -42, 50, -20],
+   [52, -22, 48, -38, 62, -20]].forEach(([x1,y1,x2,y2,x3,y3]) => {
+    ctx.beginPath();
+    ctx.moveTo(x1 * S, y1 * S + swayY);
+    ctx.lineTo(x2 * S, y2 * S + swayY);
+    ctx.lineTo(x3 * S, y3 * S + swayY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  // ── Foreleg claw ─────────────────────────────────────────────────
+  ctx.strokeStyle = DD;
+  ctx.lineWidth = 6 * S;
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(22 * S, 20 * S + swayY);
+  ctx.bezierCurveTo(26 * S, 30 * S + swayY, 22 * S, 40 * S + swayY, 16 * S, 44 * S + swayY);
+  ctx.stroke();
+  for (let c = -1; c <= 1; c++) {
+    ctx.lineWidth = 2 * S;
+    ctx.beginPath();
+    ctx.moveTo((16 + c * 5) * S, 42 * S + swayY);
+    ctx.lineTo((13 + c * 6) * S, 54 * S + swayY);
+    ctx.stroke();
+  }
+
+  // ── Shadow beneath dragon ─────────────────────────────────────────
+  ctx.restore();
+  // (shadow drawn after restore so it isn't flipped)
+  const shadow = ctx.createRadialGradient(cx, cy + 50 * S, 5, cx, cy + 50 * S, 80 * S);
+  shadow.addColorStop(0, 'rgba(0,0,0,0.12)');
+  shadow.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.beginPath();
+  ctx.ellipse(cx, cy + 50 * S, 80 * S, 18 * S, 0, 0, Math.PI * 2);
+  ctx.fillStyle = shadow;
+  ctx.fill();
+}
+
+// ── Flight path: Lissajous sweep through the full page ───────────────
+// The dragon roams freely so it actually ploughs through the text.
+function dragonPos(t) {
+  const W = dc.width;
+  const H = dc.height;
+  const x = W * 0.5 + Math.cos(t * 0.41) * W * 0.44;
+  const y = H * 0.50 + Math.sin(t * 0.27) * H * 0.36 + Math.sin(t * 0.63) * H * 0.08;
+  return { x, y };
+}
+
+// ── Per-character letter repulsion physics ────────────────────────────
+const REPULSION_R  = 170;    // radius of dragon's force field (px)
+const REPULSION_F  = 3200;   // strength constant
+const SPRING_K     = 0.10;   // spring pull back to origin
+const DAMPING      = 0.72;   // velocity damping per frame
+
+// Wrap every non-space character inside targeted elements in a <span class="letter">
+function wrapTextNodes(el) {
+    [...el.childNodes].forEach(node => {
+        if (node.nodeType === Node.TEXT_NODE) {
+            const text = node.textContent;
+            if (!text.trim()) return;
+            const frag = document.createDocumentFragment();
+            for (const ch of text) {
+                if (ch === ' ' || ch === '\n' || ch === '\t') {
+                    frag.appendChild(document.createTextNode(ch));
+                } else {
+                    const s = document.createElement('span');
+                    s.className = 'letter';
+                    s.textContent = ch;
+                    frag.appendChild(s);
+                }
+            }
+            node.parentNode.replaceChild(frag, node);
+        } else if (node.nodeType === Node.ELEMENT_NODE) {
+            wrapTextNodes(node);
+        }
+    });
+}
+
+document.querySelectorAll(
+    '.presentation-card h3, .presentation-card .description, ' +
+    '.presentation-card .meta, h2, .subtitle'
+).forEach(wrapTextNodes);
+
+// Batch-read all initial positions after one layout pass
+let letters = [];
+requestAnimationFrame(() => {
+    const els   = [...document.querySelectorAll('.letter')];
+    const rects = els.map(el => el.getBoundingClientRect());   // single batch read
+    letters = rects.map((r, i) => ({
+        el: els[i],
+        ox: r.left + r.width  / 2,           // viewport-relative x (stable — no scroll)
+        oy: r.top  + r.height / 2 + window.scrollY,  // page-absolute y
+        dx: 0, dy: 0,  // current displacement
+        vx: 0, vy: 0,  // velocity
+    }));
+});
+
+// Re-measure on resize (positions change when the page reflows)
+window.addEventListener('resize', () => {
+    if (!letters.length) return;
+    letters.forEach(L => { L.dx = L.dy = L.vx = L.vy = 0; L.el.style.transform = ''; });
+    const rects = letters.map(L => L.el.getBoundingClientRect());
+    rects.forEach((r, i) => {
+        letters[i].ox = r.left + r.width  / 2;
+        letters[i].oy = r.top  + r.height / 2 + window.scrollY;
+    });
+});
+
+function applyRepulsion(dragonX, dragonY) {
+    if (!letters.length) return;
+    const scrollY = window.scrollY;
+
+    for (const L of letters) {
+        // Convert page-absolute stored position to current viewport coords
+        const lx = L.ox;
+        const ly = L.oy - scrollY;
+
+        const ddx  = lx - dragonX;
+        const ddy  = ly - dragonY;
+        const dist = Math.sqrt(ddx * ddx + ddy * ddy) || 1;
+
+        if (dist < REPULSION_R) {
+            // Inverse-square repulsion — strongest right next to the dragon
+            const force = REPULSION_F / (dist * dist + 80);
+            L.vx += (ddx / dist) * force;
+            L.vy += (ddy / dist) * force;
+        }
+
+        // Spring pulls letter back toward its original position
+        L.vx -= L.dx * SPRING_K;
+        L.vy -= L.dy * SPRING_K;
+
+        // Energy dissipation
+        L.vx *= DAMPING;
+        L.vy *= DAMPING;
+
+        // Integrate velocity → displacement
+        L.dx += L.vx;
+        L.dy += L.vy;
+
+        // Hard clamp so letters don't fly off-screen entirely
+        const mag = Math.sqrt(L.dx * L.dx + L.dy * L.dy);
+        if (mag > 90) { L.dx *= 90 / mag; L.dy *= 90 / mag; }
+
+        // Write transform (skip negligible values to avoid style churn)
+        if (Math.abs(L.dx) > 0.05 || Math.abs(L.dy) > 0.05) {
+            L.el.style.transform = `translate(${L.dx.toFixed(2)}px,${L.dy.toFixed(2)}px)`;
+            // Scorch colour: letters near the dragon glow ember-red
+            if (dist < REPULSION_R * 0.55) {
+                const heat = 1 - dist / (REPULSION_R * 0.55);
+                L.el.style.color =
+                    `rgb(${Math.round(30 + heat * 160)},${Math.round(10 + heat * 8)},8)`;
+            } else {
+                L.el.style.color = '';
+            }
+        } else {
+            if (L.el.style.transform) L.el.style.transform = '';
+            if (L.el.style.color)     L.el.style.color     = '';
+        }
+    }
+}
+
+// ── Main animation loop ───────────────────────────────────────────────
+let t0 = null;
+
+function frame(ts) {
+  if (!t0) t0 = ts;
+  const t = (ts - t0) / 1000;
+
+  ctx.clearRect(0, 0, dc.width, dc.height);
+
+  const pos  = dragonPos(t);
+  const pos2 = dragonPos(t + 0.05);
+  const dir  = pos2.x > pos.x ? 1 : -1;
+
+  // Spawn fire from mouth (mouth is ~90px ahead of center, in dragon coords)
+  if (Math.random() < 0.45) {
+    const mouthX = pos.x + dir * 100;
+    const mouthY = pos.y + 4;
+    spawnFlame(mouthX, mouthY, dir);
+  }
+
+  tickFlames();
+  drawFlames();
+  drawDragon(pos.x, pos.y, t);
+  applyRepulsion(pos.x, pos.y);
+  drawScroll();
+
+  requestAnimationFrame(frame);
+}
+
+requestAnimationFrame(frame);
+</script>
 </body>
 </html>

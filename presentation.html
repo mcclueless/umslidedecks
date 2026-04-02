@@ -177,6 +177,19 @@
         .theme-7 .action-box { border-color: var(--um-pistachegroen); background: rgba(217,255,214,0.1); }
         .theme-8 .action-box { border-color: var(--um-zachtroze); background: rgba(249,196,184,0.1); }
         .action-box h3 { margin-bottom: 8px; }
+
+        /* ── Classes for slide 5 (from part2-condensed) ── */
+        :root {
+            --um-gold:  #F1E798;   /* botergeel — readable on dark red bg */
+            --um-coral: #EA7C69;   /* perzikoranje */
+            --um-green: #0F7564;   /* tealgroen */
+        }
+        .three-column { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 15px; z-index: 1; position: relative; }
+        .method-card { background: rgba(255,255,255,0.07); border-radius: 12px; padding: 18px; border: 1px solid rgba(234,124,105,0.3); }
+        .method-card h4 { font-size: 1.05rem; margin-bottom: 10px; }
+        .method-card ul { padding-left: 16px; font-size: 0.88rem; line-height: 1.6; }
+        .brain-box { background: rgba(234,124,105,0.1); border: 2px solid var(--um-gold); border-radius: 12px; text-align: center; z-index: 1; position: relative; }
+        .code-box { background: rgba(0,0,0,0.35); border-radius: 8px; padding: 14px 18px; font-family: 'Courier New', monospace; font-size: 0.85rem; color: var(--um-gold); white-space: pre-wrap; overflow-x: auto; }
     </style>
 </head>
 <body>
@@ -217,7 +230,7 @@
         <h2>De keuze: twee focusprojecten</h2>
         <div class="two-col">
             <div class="card">
-                <h3>1. AI Findability</h3>
+                <h3>1. Website optimisation AND AI-findability</h3>
                 <ul>
                     <li><span class="accent">M&C-breed project</span></li>
                     <li>Gemengd projectteam</li>
@@ -243,7 +256,7 @@
         <div class="stone stone-1"></div>
         <div class="stone stone-3"></div>
         <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-        <h2>AI Findability — Tijdlijn</h2>
+        <h2>Website optimisation AND AI-findability — Tijdlijn</h2>
         <div class="timeline">
             <div class="timeline-item">
                 <div class="timeline-month">Begin April</div>
@@ -270,21 +283,49 @@
         <div class="stone stone-3"></div>
         <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
         <h2>AI Findability — Het framework</h2>
-        <p class="subtitle" style="margin-bottom: 10px; font-size: 1.1rem;">Eerder gepresenteerd aan Bas, Shervin en M&R team</p>
-        <div class="quadrant">
-            <div></div>
-            <div class="quadrant-label-top">📚 Memory<br><small>(AI weet het al)</small></div>
-            <div class="quadrant-label-top">🔍 Search<br><small>(AI zoekt live)</small></div>
-            <div class="quadrant-label-left">About UM<br><small>(specifiek)</small></div>
-            <div class="quadrant-cell q-orange"><strong>Zone 1</strong><span>"Hoe oud is UM?"<br>Controle: LAAG</span></div>
-            <div class="quadrant-cell q-green"><strong>Zone 2 ★</strong><span>"Toelatingseisen 2026"<br>Controle: HOOG</span></div>
-            <div class="quadrant-label-left">Include UM<br><small>(vergelijkend)</small></div>
-            <div class="quadrant-cell q-yellow"><strong>Zone 3</strong><span>"Beste psychologie NL?"<br>Controle: LAAG-MED</span></div>
-            <div class="quadrant-cell q-red"><strong>Zone 4</strong><span>"Vergelijk UM vs UvA"<br>Controle: MED-HOOG</span></div>
+        <p class="subtitle" style="margin-bottom: 10px; font-size: 1.1rem;">Eerder gepresenteerd aan Bas, Shervin en M&amp;R team</p>
+        <p style="margin-bottom: 15px;">Vragen over UM waarbij AI live zoekt — <strong>hoogste controle, beste ROI</strong>:</p>
+
+        <div class="three-column">
+            <div class="method-card" style="border-color: var(--um-green);">
+                <h4 style="color: var(--um-green);">Contentstrategie</h4>
+                <ul style="margin-top: 10px; font-size: 0.95rem;">
+                    <li><strong>Feiten-eerst schrijven:</strong> "#1 in NL (Keuzegids 2025)" niet "wereldklasse"</li>
+                    <li>Statistieken in openingsparagrafen</li>
+                    <li>Citeerbare, verifieerbare claims</li>
+                    <li>Maak een "Feiten &amp; Cijfers"-pagina</li>
+                </ul>
+            </div>
+            <div class="method-card" style="border-color: var(--um-gold);">
+                <h4 style="color: var(--um-gold);">Technische Optimalisatie</h4>
+                <ul style="margin-top: 10px; font-size: 0.95rem;">
+                    <li><strong>llms.txt</strong> — geselecteerde feiten voor AI</li>
+                    <li>Schema markup (Organisatie, FAQ)</li>
+                    <li>Controleer <strong>Bing-indexering</strong> (ChatGPT gebruikt Bing!)</li>
+                    <li>Sta AI-bots toe in robots.txt</li>
+                </ul>
+            </div>
+            <div class="method-card" style="border-color: var(--um-coral);">
+                <h4 style="color: var(--um-coral);">Testen &amp; Monitoring</h4>
+                <ul style="margin-top: 10px; font-size: 0.95rem;">
+                    <li>Verzamel echte vragen van beurzen, callcenter</li>
+                    <li>Test op ChatGPT, Google AI, Perplexity</li>
+                    <li>Scoor met rubric (nauwkeurigheid, volledigheid)</li>
+                    <li>Volg reacties van concurrenten</li>
+                </ul>
+            </div>
         </div>
-        <p style="text-align: center; font-size: 1.05rem; margin-top: 15px;">
-            <span class="accent">Focus:</span> Zone 2 (hoge controle) & Zone 4 (vergelijkingen) — waar AI live zoekt
-        </p>
+
+        <div class="brain-box" style="margin-top: 20px; padding: 18px;">
+            <h4 style="color: var(--um-gold); margin-bottom: 10px;">📄 llms.txt Voorbeeld</h4>
+            <div class="code-box" style="text-align: left; max-width: 700px; margin: 0 auto;"># Maastricht University
+> Young, international research university founded 1976 in the Netherlands.
+
+## Quick Facts
+- Students: 18,500+ | 50% international
+- Teaching: Problem-Based Learning (PBL) — 18 students per tutorial
+- Ranked #1 Psychology in NL (Keuzegids 2025)</div>
+        </div>
     </div>
 
     <!-- Slide 6: Team Composition - Chocoladebruin + Pistachegroen -->
