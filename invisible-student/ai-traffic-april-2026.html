@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Traffic at UM — April 2026 Report</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+    <style>
+        /* UM Visual Identity - Full Brandbook Dec 2025 */
+        :root {
+            --um-staalblauw:      #000831;
+            --um-ossenbloedrood:  #640322;
+            --um-aardebruin:      #510702;
+            --um-nachtgroen:      #003538;
+            --um-houtskool:       #141414;
+            --um-kobaltblauw:     #3558D0;
+            --um-perzikoranje:    #EA7C69;
+            --um-chocoladebruin:  #89361F;
+            --um-tealgroen:       #0F7564;
+            --um-blushroze:       #FFEDE9;
+            --um-zachtblauw:      #BEDDF7;
+            --um-zachtroze:       #F9C4B8;
+            --um-botergeel:       #F1E798;
+            --um-pistachegroen:   #D9FFD6;
+            --um-gebroken-wit:    #FCFCFC;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Aptos, 'GT Standard', Calibri, system-ui, sans-serif; overflow: hidden; }
+
+        .slide {
+            display: none;
+            min-height: 100vh;
+            padding: 50px 80px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+        .slide.active { display: flex; flex-direction: column; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* GESTAPELDE STENEN */
+        .stone {
+            position: absolute;
+            border-radius: 50px;
+            z-index: 0;
+        }
+        .stone-1 { width: 500px; height: 220px; top: -100px; right: -150px; transform: rotate(-12deg); opacity: 0.2; }
+        .stone-2 { width: 400px; height: 180px; bottom: -80px; left: -120px; transform: rotate(8deg); opacity: 0.15; }
+        .stone-3 { width: 300px; height: 150px; top: 40%; right: -80px; transform: rotate(-5deg); opacity: 0.12; }
+
+        /* COLOR THEMES */
+        /* 1. Staalblauw + Gebroken wit */
+        .theme-1 { background: var(--um-staalblauw); color: var(--um-gebroken-wit); }
+        .theme-1 h1, .theme-1 h2 { color: var(--um-gebroken-wit); }
+        .theme-1 .accent { color: var(--um-botergeel); }
+        .theme-1 .stone { background: var(--um-zachtblauw); }
+        .theme-1 .card { background: rgba(190,221,247,0.12); border: 2px solid rgba(190,221,247,0.3); }
+        .theme-1 .action-box { border-color: var(--um-botergeel); background: rgba(241,231,152,0.08); }
+        .theme-1 .timeline-month { background: var(--um-botergeel); color: var(--um-staalblauw); }
+        .theme-1 h2 { border-bottom-color: rgba(190,221,247,0.4); }
+
+        /* 2. Kobaltblauw + Blushroze */
+        .theme-2 { background: var(--um-kobaltblauw); color: var(--um-blushroze); }
+        .theme-2 h1, .theme-2 h2 { color: var(--um-blushroze); }
+        .theme-2 .accent { color: var(--um-gebroken-wit); }
+        .theme-2 .stone { background: var(--um-blushroze); }
+        .theme-2 .card { background: rgba(255,237,233,0.12); border: 2px solid rgba(255,237,233,0.3); }
+        .theme-2 .action-box { border-color: var(--um-blushroze); background: rgba(255,237,233,0.08); }
+        .theme-2 .timeline-month { background: var(--um-blushroze); color: var(--um-kobaltblauw); }
+        .theme-2 h2 { border-bottom-color: rgba(255,237,233,0.4); }
+
+        /* 3. Staalblauw + Botergeel */
+        .theme-3 { background: var(--um-staalblauw); color: var(--um-botergeel); }
+        .theme-3 h1, .theme-3 h2 { color: var(--um-botergeel); }
+        .theme-3 .accent { color: var(--um-gebroken-wit); }
+        .theme-3 .stone { background: var(--um-botergeel); }
+        .theme-3 .card { background: rgba(241,231,152,0.10); border: 2px solid rgba(241,231,152,0.3); }
+        .theme-3 .action-box { border-color: var(--um-botergeel); background: rgba(241,231,152,0.08); }
+        .theme-3 .timeline-month { background: var(--um-botergeel); color: var(--um-staalblauw); }
+        .theme-3 h2 { border-bottom-color: rgba(241,231,152,0.4); }
+
+        /* 4. Ossenbloedrood + Perzikoranje */
+        .theme-4 { background: var(--um-ossenbloedrood); color: var(--um-perzikoranje); }
+        .theme-4 h1, .theme-4 h2 { color: var(--um-perzikoranje); }
+        .theme-4 .accent { color: var(--um-gebroken-wit); }
+        .theme-4 .stone { background: var(--um-perzikoranje); }
+        .theme-4 .card { background: rgba(234,124,105,0.12); border: 2px solid rgba(234,124,105,0.3); }
+        .theme-4 .action-box { border-color: var(--um-perzikoranje); background: rgba(234,124,105,0.08); }
+        .theme-4 .timeline-month { background: var(--um-perzikoranje); color: var(--um-ossenbloedrood); }
+        .theme-4 h2 { border-bottom-color: rgba(234,124,105,0.4); }
+
+        /* 5. Nachtgroen + Zachtblauw */
+        .theme-5 { background: var(--um-nachtgroen); color: var(--um-zachtblauw); }
+        .theme-5 h1, .theme-5 h2 { color: var(--um-zachtblauw); }
+        .theme-5 .accent { color: var(--um-gebroken-wit); }
+        .theme-5 .stone { background: var(--um-zachtblauw); }
+        .theme-5 .card { background: rgba(190,221,247,0.12); border: 2px solid rgba(190,221,247,0.3); }
+        .theme-5 .action-box { border-color: var(--um-zachtblauw); background: rgba(190,221,247,0.08); }
+        .theme-5 .timeline-month { background: var(--um-zachtblauw); color: var(--um-nachtgroen); }
+        .theme-5 h2 { border-bottom-color: rgba(190,221,247,0.4); }
+
+        /* 6. Tealgroen + Blushroze */
+        .theme-6 { background: var(--um-tealgroen); color: var(--um-blushroze); }
+        .theme-6 h1, .theme-6 h2 { color: var(--um-blushroze); }
+        .theme-6 .accent { color: var(--um-gebroken-wit); }
+        .theme-6 .stone { background: var(--um-blushroze); }
+        .theme-6 .card { background: rgba(255,237,233,0.12); border: 2px solid rgba(255,237,233,0.3); }
+        .theme-6 .action-box { border-color: var(--um-blushroze); background: rgba(255,237,233,0.08); }
+        .theme-6 .timeline-month { background: var(--um-blushroze); color: var(--um-tealgroen); }
+        .theme-6 h2 { border-bottom-color: rgba(255,237,233,0.4); }
+
+        /* 7. Chocoladebruin + Pistachegroen */
+        .theme-7 { background: var(--um-chocoladebruin); color: var(--um-pistachegroen); }
+        .theme-7 h1, .theme-7 h2 { color: var(--um-pistachegroen); }
+        .theme-7 .accent { color: var(--um-gebroken-wit); }
+        .theme-7 .stone { background: var(--um-pistachegroen); }
+        .theme-7 .card { background: rgba(217,255,214,0.12); border: 2px solid rgba(217,255,214,0.3); }
+        .theme-7 .action-box { border-color: var(--um-pistachegroen); background: rgba(217,255,214,0.08); }
+        .theme-7 .timeline-month { background: var(--um-pistachegroen); color: var(--um-chocoladebruin); }
+        .theme-7 h2 { border-bottom-color: rgba(217,255,214,0.4); }
+
+        /* Typography */
+        h1 { font-size: 3.8rem; font-weight: 700; line-height: 1.1; margin-bottom: 20px; z-index: 1; position: relative; }
+        h2 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin-bottom: 20px; z-index: 1; position: relative;
+             border-bottom: 2px solid rgba(255,255,255,0.2); padding-bottom: 12px; }
+        h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; opacity: 0.9; z-index: 1; position: relative; }
+        p, li { font-size: 1.1rem; line-height: 1.6; z-index: 1; position: relative; }
+        .subtitle { font-size: 1.3rem; opacity: 0.8; margin-bottom: 25px; z-index: 1; position: relative; }
+        .accent { font-weight: 600; }
+
+        /* Logo */
+        .logo { position: absolute; top: 22px; left: 40px; z-index: 10; display: flex; align-items: center; gap: 10px; }
+        .logo-icon { width: 28px; height: 28px; background: currentColor; opacity: 0.85;
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+        .logo-text { font-size: 0.9rem; font-weight: 600; letter-spacing: 0.3px; opacity: 0.85; }
+
+        /* Lists */
+        ul { list-style: none; margin: 15px 0; z-index: 1; position: relative; }
+        li { margin-bottom: 10px; padding-left: 25px; position: relative; }
+        li::before { content: "→"; position: absolute; left: 0; font-weight: 700; }
+
+        /* Cards - 32px radius */
+        .card { border-radius: 32px; padding: 22px 28px; z-index: 1; position: relative; }
+
+        /* Two columns */
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 20px; z-index: 1; position: relative; }
+
+        /* Action box */
+        .action-box { border-left: 4px solid; padding: 16px 20px; margin: 16px 0;
+            border-radius: 0 16px 16px 0; z-index: 1; position: relative; }
+        .action-box h3 { margin-bottom: 6px; }
+
+        /* Timeline */
+        .timeline { display: flex; flex-direction: column; gap: 14px; margin: 16px 0; z-index: 1; position: relative; }
+        .timeline-item { display: flex; align-items: flex-start; gap: 18px; }
+        .timeline-month { padding: 7px 14px; border-radius: 20px; font-weight: 700;
+            font-size: 0.9rem; min-width: 100px; text-align: center; flex-shrink: 0; }
+        .timeline-content { flex: 1; padding-top: 4px; }
+
+        /* Navigation */
+        .nav { position: fixed; bottom: 25px; right: 35px; display: flex; gap: 12px; z-index: 100; }
+        .nav button { background: rgba(255,255,255,0.9); color: #000; border: none;
+            padding: 10px 20px; font-size: 0.9rem; font-weight: 600; cursor: pointer;
+            border-radius: 20px; transition: all 0.2s; }
+        .nav button:hover { background: #fff; transform: scale(1.02); }
+        .nav button:disabled { opacity: 0.3; cursor: not-allowed; transform: none; }
+        .slide-counter { position: fixed; bottom: 30px; left: 40px; font-size: 0.9rem;
+            opacity: 0.6; z-index: 100; color: #fff; }
+
+        /* Title slide */
+        .title-slide { justify-content: center; align-items: flex-start; }
+        .title-slide h1 { font-size: 4rem; }
+        .title-slide .eyebrow { font-size: 0.9rem; letter-spacing: 0.15em; text-transform: uppercase;
+            opacity: 0.7; margin-bottom: 16px; z-index: 1; position: relative; }
+        .title-slide .date { margin-top: 40px; font-size: 1rem; opacity: 0.6; z-index: 1; position: relative; }
+
+        /* Stat grid */
+        .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+            margin-top: 16px; z-index: 1; position: relative; }
+        .stat-card { border-radius: 32px; padding: 20px 24px; }
+        .stat-card .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+            opacity: 0.7; margin-bottom: 8px; }
+        .stat-card .value { font-size: 2rem; font-weight: 700; line-height: 1; }
+        .stat-card .delta { font-size: 0.78rem; margin-top: 6px; opacity: 0.85; }
+        .delta-up   { color: var(--um-perzikoranje); font-weight: 600; }
+        .delta-down { color: var(--um-pistachegroen); font-weight: 600; }
+
+        /* Chart wrappers */
+        .chart-wrap { position: relative; width: 100%; z-index: 1; }
+
+        /* Data table */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; z-index: 1; position: relative; }
+        .data-table th { padding: 10px 14px; font-weight: 600; border-bottom: 2px solid rgba(255,255,255,0.3);
+            text-align: left; opacity: 0.85; }
+        .data-table td { padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+        .data-table tr:hover td { background: rgba(255,255,255,0.04); }
+        .badge { display: inline-block; padding: 2px 10px; border-radius: 99px; font-size: 0.82em; font-weight: 700; }
+        .badge-up   { background: rgba(234,124,105,0.25); color: var(--um-perzikoranje); }
+        .badge-down { background: rgba(217,255,214,0.2); color: var(--um-pistachegroen); }
+        .badge-new  { background: rgba(241,231,152,0.25); color: var(--um-botergeel); }
+
+        /* Anomaly box */
+        .anomaly-box { border-radius: 20px; padding: 18px 22px; margin-top: 14px;
+            border: 2px solid rgba(255,255,255,0.2); background: rgba(255,255,255,0.06);
+            font-size: 0.9rem; z-index: 1; position: relative; }
+
+        /* Change rows */
+        .change-row { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 18px; z-index: 1; position: relative; }
+        .change-icon { width: 42px; height: 42px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1em; flex-shrink: 0; background: rgba(255,255,255,0.12); }
+        .change-row .text .ctitle { font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+        .change-row .text .cdesc { font-size: 0.88rem; opacity: 0.8; line-height: 1.5; }
+
+        /* Endpoint list */
+        .endpoint-list { list-style: none; padding: 0; margin: 0; }
+        .endpoint-list li { display: flex; align-items: center; gap: 12px; padding: 10px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 0.88rem; }
+        .endpoint-list li::before { display: none; }
+        .ep-rank { width: 28px; height: 28px; border-radius: 50%; background: rgba(255,255,255,0.15);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.85em; font-weight: 700; flex-shrink: 0; }
+        .ep-code { font-family: 'Courier New', monospace; background: rgba(255,255,255,0.1);
+            padding: 2px 8px; border-radius: 6px; font-size: 0.9em; }
+        .ep-hits { margin-left: auto; opacity: 0.6; font-size: 0.85em; }
+
+        /* Steps */
+        .steps-list { list-style: none; padding: 0; margin: 0; counter-reset: steps; z-index: 1; position: relative; }
+        .steps-list li { counter-increment: steps; display: flex; align-items: flex-start;
+            gap: 18px; margin-bottom: 16px; font-size: 0.9rem; }
+        .steps-list li::before { content: counter(steps); min-width: 32px; height: 32px;
+            border-radius: 50%; background: rgba(255,255,255,0.9); color: #000;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; flex-shrink: 0; }
+        .steps-list li .step-title { font-weight: 700; margin-bottom: 3px; }
+        .steps-list li .step-desc { opacity: 0.8; line-height: 1.5; }
+    </style>
+</head>
+<body>
+
+<!-- ─── 1. TITLE — Kobaltblauw + Blushroze ─── -->
+<div class="slide title-slide theme-2 active" data-slide="1">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-2"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <p class="eyebrow">Web Infrastructure &amp; Analytics · April 2026</p>
+    <h1>AI Bot Traffic<br>at UM</h1>
+    <p class="subtitle">Month-over-Month Comparison<br>Feb 2 – Mar 2, 2026 &nbsp;vs.&nbsp; Mar 9 – Apr 8, 2026</p>
+    <p class="date">April 2026</p>
+</div>
+
+<!-- ─── 2. KEY STATS — Tealgroen + Blushroze ─── -->
+<div class="slide theme-6" data-slide="2">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-3"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Key Numbers at a Glance</h2>
+    <div class="stat-grid">
+        <div class="stat-card card">
+            <div class="label">This Month — Total Requests</div>
+            <div class="value">2.70M</div>
+            <div class="delta"><span class="delta-up">▲ +151%</span> vs. last month</div>
+        </div>
+        <div class="stat-card card">
+            <div class="label">Last Month — Total Requests</div>
+            <div class="value">1.08M</div>
+            <div class="delta" style="opacity:0.5;">Baseline</div>
+        </div>
+        <div class="stat-card card">
+            <div class="label">This Month — Bandwidth</div>
+            <div class="value">206 GB</div>
+            <div class="delta"><span class="delta-up">▲ +137%</span> vs. last month</div>
+        </div>
+        <div class="stat-card card">
+            <div class="label">Last Month — Bandwidth</div>
+            <div class="value">87 GB</div>
+            <div class="delta" style="opacity:0.5;">Baseline</div>
+        </div>
+        <div class="stat-card card">
+            <div class="label">#1 Bot This Month</div>
+            <div class="value" style="font-size:1.6rem;">Bytespider</div>
+            <div class="delta"><span class="delta-up">▲</span> Was #3 last month</div>
+        </div>
+        <div class="stat-card card">
+            <div class="label">Peak Single-Period Spike</div>
+            <div class="value" style="font-size:1.6rem;">140K</div>
+            <div class="delta">Googlebot · Apr 2</div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── 3. TRAFFIC GROWTH — Kobaltblauw + Blushroze ─── -->
+<div class="slide theme-2" data-slide="3">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-2"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Traffic Growth: 2.5× in 30 Days</h2>
+    <div class="chart-wrap" style="height: calc(100vh - 220px);">
+        <canvas id="growthChart"></canvas>
+    </div>
+</div>
+
+<!-- ─── 4. BOT BREAKDOWN — Nachtgroen + Zachtblauw ─── -->
+<div class="slide theme-5" data-slide="4">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-3"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Bot Composition — Month-over-Month</h2>
+    <div class="two-col">
+        <div>
+            <h3>Last Month (Feb 2 – Mar 2)</h3>
+            <div class="chart-wrap" style="height: calc(100vh - 280px);">
+                <canvas id="pieLastMonth"></canvas>
+            </div>
+        </div>
+        <div>
+            <h3>This Month (Mar 9 – Apr 8)</h3>
+            <div class="chart-wrap" style="height: calc(100vh - 280px);">
+                <canvas id="pieThisMonth"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── 5. BOT TABLE — Staalblauw + Botergeel ─── -->
+<div class="slide theme-3" data-slide="5">
+    <div class="stone stone-2"></div>
+    <div class="stone stone-3"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Bot-by-Bot Comparison</h2>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Bot</th>
+                <th>Last Month Share</th>
+                <th>This Month Share</th>
+                <th>Last Month Requests</th>
+                <th>This Month Requests</th>
+                <th>Change</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Bytespider</strong> (TikTok)</td>
+                <td>15.85%</td><td>45.9%</td>
+                <td>~170,600</td><td>~1,239,900</td>
+                <td><span class="badge badge-up">▲ +627%</span></td>
+            </tr>
+            <tr>
+                <td><strong>GPTBot</strong> (OpenAI)</td>
+                <td>44.35%</td><td>29.69%</td>
+                <td>~477,500</td><td>~802,000</td>
+                <td><span class="badge badge-up">▲ +68%</span></td>
+            </tr>
+            <tr>
+                <td><strong>Googlebot</strong></td>
+                <td>28.42%</td><td>21.24%</td>
+                <td>~306,000</td><td>~573,800</td>
+                <td><span class="badge badge-up">▲ +88%</span></td>
+            </tr>
+            <tr>
+                <td><strong>OAI-SearchBot</strong></td>
+                <td>11.33%</td><td>~2.5%</td>
+                <td>~122,000</td><td>~67,500</td>
+                <td><span class="badge badge-down">▼ −45%</span></td>
+            </tr>
+            <tr>
+                <td><strong>PerplexityBot</strong></td>
+                <td>&lt;1%</td><td>&lt;1%</td>
+                <td>—</td><td>~18,100</td>
+                <td><span class="badge badge-new">New</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- ─── 6. BANDWIDTH — Ossenbloedrood + Perzikoranje ─── -->
+<div class="slide theme-4" data-slide="6">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-2"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Bandwidth: 87 GB → 206 GB</h2>
+    <div class="chart-wrap" style="height: calc(100vh - 250px);">
+        <canvas id="bandwidthChart"></canvas>
+    </div>
+    <p style="font-size:0.85rem; opacity:0.7; margin-top:10px; z-index:1; position:relative;">
+        Bytespider alone consumed ~75 GB this month — nearly as much as the entire network used last month.
+    </p>
+</div>
+
+<!-- ─── 7. TOP ENDPOINTS — Tealgroen + Blushroze ─── -->
+<div class="slide theme-6" data-slide="7">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-3"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Top Crawled Endpoints</h2>
+    <div class="two-col">
+        <div>
+            <h3>What Bots Are Hitting</h3>
+            <ul class="endpoint-list">
+                <li><span class="ep-rank">1</span><div><span class="ep-code">.js</span> bundles</div><span class="ep-hits">High volume</span></li>
+                <li><span class="ep-rank">2</span><div><span class="ep-code">.woff2</span> / font assets</div><span class="ep-hits">High volume</span></li>
+                <li><span class="ep-rank">3</span><div><span class="ep-code">.css</span> stylesheets</div><span class="ep-hits">Moderate</span></li>
+                <li><span class="ep-rank">4</span><div><span class="ep-code">.svg</span> / image assets</div><span class="ep-hits">Moderate</span></li>
+                <li><span class="ep-rank">5</span><div>HTML pages</div><span class="ep-hits">Lower share</span></li>
+            </ul>
+        </div>
+        <div>
+            <h3>Notable Finding</h3>
+            <div class="anomaly-box">
+                <strong>Static assets, not pages, dominate.</strong><br><br>
+                The majority of AI bot requests target JavaScript bundles and web fonts rather than HTML content pages.
+                This suggests bots are executing full browser-like asset fetches — not just reading content — inflating bandwidth well beyond what page views alone would suggest.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── 8. GOOGLEBOT ANOMALY — Kobaltblauw + Blushroze ─── -->
+<div class="slide theme-2" data-slide="8">
+    <div class="stone stone-2"></div>
+    <div class="stone stone-3"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Googlebot Anomaly — April 2nd</h2>
+    <div class="chart-wrap" style="height: calc(100vh - 340px);">
+        <canvas id="anomalyChart"></canvas>
+    </div>
+    <div class="anomaly-box" style="margin-top:14px; font-size:0.88rem;">
+        <strong>140,913 requests in a single crawl period on April 2nd</strong> — a spike roughly
+        <strong>5–7× Googlebot's typical daily rate</strong>.<br><br>
+        Possible causes: sitemap re-submission, major site structure change, or a scheduled deep recrawl triggered by a content update.
+        Monitoring is recommended to distinguish routine indexing from an unintended trigger.
+    </div>
+</div>
+
+<!-- ─── 9. KEY CHANGES — Chocoladebruin + Pistachegroen ─── -->
+<div class="slide theme-7" data-slide="9">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-2"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>What Changed &amp; Why It Matters</h2>
+    <div class="change-row">
+        <div class="change-icon">▲</div>
+        <div class="text">
+            <div class="ctitle">2.5× Traffic Explosion in 30 Days</div>
+            <div class="cdesc">From 1.08M to 2.70M requests — AI indexing of UM web properties is accelerating rapidly. Infrastructure load, CDN costs, and rate-limiting policies should be reviewed.</div>
+        </div>
+    </div>
+    <div class="change-row">
+        <div class="change-icon">▲</div>
+        <div class="text">
+            <div class="ctitle">Bytespider (TikTok) Surges to #1</div>
+            <div class="cdesc">Share jumped from 15.85% → 45.9% (+627% in absolute requests). TikTok is aggressively crawling UM assets — likely for training data. Consider robots.txt policy review.</div>
+        </div>
+    </div>
+    <div class="change-row">
+        <div class="change-icon">▼</div>
+        <div class="text">
+            <div class="ctitle">OAI-SearchBot Declines Significantly</div>
+            <div class="cdesc">Down from 11.33% → ~2.5% (−45% absolute). May indicate OpenAI has already indexed key UM content, or a shift in crawling strategy for ChatGPT Search.</div>
+        </div>
+    </div>
+    <div class="change-row">
+        <div class="change-icon">⚠</div>
+        <div class="text">
+            <div class="ctitle">Bandwidth Nearly Doubled</div>
+            <div class="cdesc">87 GB → 206 GB. Bot-driven bandwidth is now a measurable cost and performance factor. Asset-level crawling (JS/fonts) amplifies per-visit data transfer.</div>
+        </div>
+    </div>
+</div>
+
+<!-- ─── 10. NEXT STEPS — Staalblauw + Gebroken wit ─── -->
+<div class="slide theme-1" data-slide="10">
+    <div class="stone stone-1"></div>
+    <div class="stone stone-3"></div>
+    <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
+    <h2>Recommended Next Steps</h2>
+    <ol class="steps-list">
+        <li>
+            <div>
+                <div class="step-title">Review &amp; Update robots.txt</div>
+                <div class="step-desc">Evaluate whether Bytespider (TikTok) and other aggressive crawlers should be rate-limited or disallowed from asset paths. Coordinate with Legal and Digital Strategy.</div>
+            </div>
+        </li>
+        <li>
+            <div>
+                <div class="step-title">Investigate the April 2 Googlebot Spike</div>
+                <div class="step-desc">Determine the trigger — sitemap resubmission, content change, or an anomaly. Confirm it aligns with expected SEO activity.</div>
+            </div>
+        </li>
+        <li>
+            <div>
+                <div class="step-title">Audit Static Asset Serving</div>
+                <div class="step-desc">JS bundles and fonts should not be accessible to non-browser bots at scale. Evaluate CDN-level bot filtering for static asset paths.</div>
+            </div>
+        </li>
+        <li>
+            <div>
+                <div class="step-title">Establish Monthly AI Traffic Baseline</div>
+                <div class="step-desc">The 2.5× month-over-month growth suggests this trend will continue. Set up automated dashboards and alerts for sustained monitoring.</div>
+            </div>
+        </li>
+        <li>
+            <div>
+                <div class="step-title">Engage Web Governance on AI Crawling Policy</div>
+                <div class="step-desc">This data supports a broader conversation about UM's policy stance on AI training data access. Proactive policy &gt; reactive mitigation.</div>
+            </div>
+        </li>
+    </ol>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+    <button id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+    <button id="nextBtn" onclick="changeSlide(1)">Next →</button>
+</div>
+<div class="slide-counter"><span id="currentSlide">1</span> / <span id="totalSlides">10</span></div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 10;
+
+    /* ── UM Chart palette ── */
+    const KOBALT   = '#3558D0';
+    const PERZIK   = '#EA7C69';
+    const TEAL     = '#0F7564';
+    const GEEL     = '#F1E798';
+    const BLAUW    = '#BEDDF7';
+    const STAALBLAUW = '#000831';
+    const PISTACHE = '#D9FFD6';
+    const MID      = 'rgba(255,255,255,0.55)';
+    const GRIDCOL  = 'rgba(255,255,255,0.08)';
+
+    Chart.defaults.font = { family: "Aptos, 'GT Standard', Calibri, system-ui, sans-serif", size: 13 };
+    const grid = { color: GRIDCOL, drawBorder: false };
+
+    const chartsInitialized = {};
+
+    function initChartsForSlide(n) {
+        if (chartsInitialized[n]) return;
+        chartsInitialized[n] = true;
+
+        if (n === 3) {
+            new Chart(document.getElementById('growthChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Feb 2 – Mar 2, 2026\n(Last Month)', 'Mar 9 – Apr 8, 2026\n(This Month)'],
+                    datasets: [{
+                        label: 'Total AI Requests',
+                        data: [1076164, 2701312],
+                        backgroundColor: [BLAUW, PERZIK],
+                        borderRadius: 16,
+                        borderSkipped: false,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => ' ' + ctx.parsed.y.toLocaleString() + ' requests' } }
+                    },
+                    scales: {
+                        x: { grid, ticks: { color: '#FFEDE9', font: { size: 14 } } },
+                        y: { grid, ticks: { color: MID, callback: v => (v/1e6).toFixed(1)+'M' } }
+                    }
+                }
+            });
+        }
+
+        if (n === 4) {
+            const pieOpts = (labels, data, colors, bg) => ({
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{ data, backgroundColor: colors, borderColor: bg, borderWidth: 3, hoverOffset: 10 }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    cutout: '58%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { color: BLAUW, padding: 12, font: { size: 11 }, boxWidth: 14 } },
+                        tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toFixed(1) + '%' } }
+                    }
+                }
+            });
+            new Chart(document.getElementById('pieLastMonth'),
+                pieOpts(['GPTBot 44.35%','Googlebot 28.42%','Bytespider 15.85%','OAI-SearchBot 11.33%'],
+                    [44.35,28.42,15.85,11.33],
+                    [PERZIK, KOBALT, GEEL, MID], '#003538'));
+            new Chart(document.getElementById('pieThisMonth'),
+                pieOpts(['Bytespider 45.9%','GPTBot 29.69%','Googlebot 21.24%','OAI-SearchBot 2.5%','PerplexityBot <1%'],
+                    [45.9,29.69,21.24,2.5,0.67],
+                    [GEEL, PERZIK, KOBALT, MID, PISTACHE], '#003538'));
+        }
+
+        if (n === 6) {
+            new Chart(document.getElementById('bandwidthChart'), {
+                type: 'bar',
+                data: {
+                    labels: ['Bytespider\n(TikTok)', 'GPTBot\n(OpenAI)', 'Googlebot', 'OAI-SearchBot\n& Other'],
+                    datasets: [
+                        { label: 'Last Month (GB)', data: [13,40,26,8],
+                          backgroundColor: 'rgba(234,124,105,0.45)', borderColor: PERZIK,
+                          borderWidth: 2, borderRadius: 10, borderSkipped: false },
+                        { label: 'This Month (GB)', data: [75,70,50,11],
+                          backgroundColor: 'rgba(241,231,152,0.6)', borderColor: GEEL,
+                          borderWidth: 2, borderRadius: 10, borderSkipped: false }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { color: PERZIK, padding: 16 } },
+                        tooltip: { callbacks: { label: ctx => ' '+ctx.dataset.label+': ~'+ctx.parsed.y+' GB' } }
+                    },
+                    scales: {
+                        x: { grid, ticks: { color: PERZIK } },
+                        y: { grid, ticks: { color: MID, callback: v => v+' GB' }, max: 90 }
+                    }
+                }
+            });
+        }
+
+        if (n === 8) {
+            const days = ['Mar 26','Mar 27','Mar 28','Mar 29','Mar 30','Mar 31','Apr 1','Apr 2','Apr 3','Apr 4','Apr 5','Apr 6','Apr 7'];
+            const vals = [18200,20100,17800,22400,19600,21000,23500,140913,19200,17600,20800,18900,21300];
+            new Chart(document.getElementById('anomalyChart'), {
+                type: 'line',
+                data: {
+                    labels: days,
+                    datasets: [{
+                        label: 'Googlebot Requests',
+                        data: vals,
+                        borderColor: BLAUW,
+                        backgroundColor: 'rgba(190,221,247,0.10)',
+                        pointBackgroundColor: vals.map((v,i) => i===7 ? PERZIK : BLAUW),
+                        pointRadius: vals.map((v,i) => i===7 ? 10 : 4),
+                        borderWidth: 2.5,
+                        fill: true,
+                        tension: 0.35,
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: ctx => ' '+ctx.parsed.y.toLocaleString()+' requests' } }
+                    },
+                    scales: {
+                        x: { grid, ticks: { color: '#FFEDE9', font: { size: 11 } } },
+                        y: { grid, ticks: { color: MID, callback: v => (v/1000).toFixed(0)+'K' } }
+                    }
+                }
+            });
+        }
+    }
+
+    function showSlide(n) {
+        if (n < 1) currentSlide = 1;
+        if (n > totalSlides) currentSlide = totalSlides;
+        document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+        document.querySelector(`[data-slide="${currentSlide}"]`).classList.add('active');
+        document.getElementById('currentSlide').textContent = currentSlide;
+        document.getElementById('prevBtn').disabled = currentSlide === 1;
+        document.getElementById('nextBtn').disabled = currentSlide === totalSlides;
+        initChartsForSlide(currentSlide);
+    }
+
+    function changeSlide(d) { currentSlide += d; showSlide(currentSlide); }
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); changeSlide(1); }
+        if (e.key === 'ArrowLeft') { e.preventDefault(); changeSlide(-1); }
+    });
+
+    showSlide(1);
+</script>
+</body>
+</html>
