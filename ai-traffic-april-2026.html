@@ -243,10 +243,10 @@
     <div class="stone stone-1"></div>
     <div class="stone stone-2"></div>
     <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-    <p class="eyebrow">Web Infrastructure &amp; Analytics · April 2026</p>
+    <p class="eyebrow">Web Infrastructure &amp; Analytics · May 2026</p>
     <h1>AI Bot Traffic<br>at UM</h1>
-    <p class="subtitle">Month-over-Month Comparison<br>Feb 2 – Mar 2, 2026 &nbsp;vs.&nbsp; Mar 9 – Apr 8, 2026</p>
-    <p class="date">April 2026</p>
+    <p class="subtitle">3-Month Trend Report<br>Feb 2026 → Mar 2026 → Apr 2026</p>
+    <p class="date">May 2026</p>
 </div>
 
 <!-- ─── 2. KEY STATS — Tealgroen + Blushroze ─── -->
@@ -257,34 +257,34 @@
     <h2>Key Numbers at a Glance</h2>
     <div class="stat-grid">
         <div class="stat-card card">
-            <div class="label">This Month — Total Requests</div>
-            <div class="value">2.70M</div>
-            <div class="delta"><span class="delta-up">▲ +151%</span> vs. last month</div>
-        </div>
-        <div class="stat-card card">
-            <div class="label">Last Month — Total Requests</div>
+            <div class="label">Feb-Mar — Total Requests</div>
             <div class="value">1.08M</div>
             <div class="delta" style="opacity:0.5;">Baseline</div>
         </div>
         <div class="stat-card card">
-            <div class="label">This Month — Bandwidth</div>
-            <div class="value">206 GB</div>
-            <div class="delta"><span class="delta-up">▲ +137%</span> vs. last month</div>
+            <div class="label">Mar-Apr — Total Requests</div>
+            <div class="value">2.70M</div>
+            <div class="delta"><span class="delta-up">▲ +151%</span></div>
         </div>
         <div class="stat-card card">
-            <div class="label">Last Month — Bandwidth</div>
-            <div class="value">87 GB</div>
-            <div class="delta" style="opacity:0.5;">Baseline</div>
+            <div class="label">Apr-May — Total Requests</div>
+            <div class="value">2.77M</div>
+            <div class="delta"><span class="delta-up">▲ +157%</span> vs. baseline</div>
         </div>
         <div class="stat-card card">
-            <div class="label">#1 Bot This Month</div>
-            <div class="value" style="font-size:1.6rem;">Bytespider</div>
-            <div class="delta"><span class="delta-up">▲</span> Was #3 last month</div>
+            <div class="label">Bandwidth Trend</div>
+            <div class="value">87→206→220 GB</div>
+            <div class="delta"><span class="delta-up">▲ +153%</span> total growth</div>
         </div>
         <div class="stat-card card">
-            <div class="label">Peak Single-Period Spike</div>
-            <div class="value" style="font-size:1.6rem;">140K</div>
-            <div class="delta">Googlebot · Apr 2</div>
+            <div class="label">#1 Bot (Apr-May)</div>
+            <div class="value" style="font-size:1.6rem;">Bytespider 64%</div>
+            <div class="delta"><span class="delta-up">▲</span> Was 16% → 46% → 64%</div>
+        </div>
+        <div class="stat-card card">
+            <div class="label">GPTBot Collapse</div>
+            <div class="value" style="font-size:1.6rem;">44% → 5.6%</div>
+            <div class="delta"><span class="delta-down">▼</span> From #1 to minor</div>
         </div>
     </div>
 </div>
@@ -294,7 +294,7 @@
     <div class="stone stone-1"></div>
     <div class="stone stone-2"></div>
     <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-    <h2>Traffic Growth: 2.5× in 30 Days</h2>
+    <h2>Traffic Growth: 3-Month Trend</h2>
     <div class="chart-wrap" style="height: calc(100vh - 220px);">
         <canvas id="growthChart"></canvas>
     </div>
@@ -305,18 +305,24 @@
     <div class="stone stone-1"></div>
     <div class="stone stone-3"></div>
     <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-    <h2>Bot Composition — Month-over-Month</h2>
-    <div class="two-col">
+    <h2>Bot Composition — 3-Month Trend</h2>
+    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px;">
         <div>
-            <h3>Last Month (Feb 2 – Mar 2)</h3>
-            <div class="chart-wrap" style="height: calc(100vh - 280px);">
+            <h3>Feb-Mar 2026</h3>
+            <div class="chart-wrap" style="height: calc(100vh - 300px);">
                 <canvas id="pieLastMonth"></canvas>
             </div>
         </div>
         <div>
-            <h3>This Month (Mar 9 – Apr 8)</h3>
-            <div class="chart-wrap" style="height: calc(100vh - 280px);">
+            <h3>Mar-Apr 2026</h3>
+            <div class="chart-wrap" style="height: calc(100vh - 300px);">
                 <canvas id="pieThisMonth"></canvas>
+            </div>
+        </div>
+        <div>
+            <h3>Apr-May 2026</h3>
+            <div class="chart-wrap" style="height: calc(100vh - 300px);">
+                <canvas id="pieAprMay"></canvas>
             </div>
         </div>
     </div>
@@ -327,48 +333,42 @@
     <div class="stone stone-2"></div>
     <div class="stone stone-3"></div>
     <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-    <h2>Bot-by-Bot Comparison</h2>
+    <h2>Bot-by-Bot Comparison (3 Months)</h2>
     <table class="data-table">
         <thead>
             <tr>
                 <th>Bot</th>
-                <th>Last Month Share</th>
-                <th>This Month Share</th>
-                <th>Last Month Requests</th>
-                <th>This Month Requests</th>
-                <th>Change</th>
+                <th>Feb-Mar</th>
+                <th>Mar-Apr</th>
+                <th>Apr-May</th>
+                <th>Trend</th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td><strong>Bytespider</strong> (TikTok)</td>
-                <td>15.85%</td><td>45.9%</td>
-                <td>~170,600</td><td>~1,239,900</td>
-                <td><span class="badge badge-up">▲ +627%</span></td>
-            </tr>
-            <tr>
-                <td><strong>GPTBot</strong> (OpenAI)</td>
-                <td>44.35%</td><td>29.69%</td>
-                <td>~477,500</td><td>~802,000</td>
-                <td><span class="badge badge-up">▲ +68%</span></td>
+                <td>15.85%</td><td>45.9%</td><td><strong>64.2%</strong></td>
+                <td><span class="badge badge-up">▲ +305%</span></td>
             </tr>
             <tr>
                 <td><strong>Googlebot</strong></td>
-                <td>28.42%</td><td>21.24%</td>
-                <td>~306,000</td><td>~573,800</td>
-                <td><span class="badge badge-up">▲ +88%</span></td>
+                <td>28.42%</td><td>21.24%</td><td><strong>26.97%</strong></td>
+                <td><span class="badge" style="background:rgba(255,255,255,0.15);">→ Stable</span></td>
+            </tr>
+            <tr>
+                <td><strong>GPTBot</strong> (OpenAI)</td>
+                <td>44.35%</td><td>29.69%</td><td><strong>5.63%</strong></td>
+                <td><span class="badge badge-down">▼ −87%</span></td>
             </tr>
             <tr>
                 <td><strong>OAI-SearchBot</strong></td>
-                <td>11.33%</td><td>~2.5%</td>
-                <td>~122,000</td><td>~67,500</td>
-                <td><span class="badge badge-down">▼ −45%</span></td>
+                <td>11.33%</td><td>~2.5%</td><td><strong>3.18%</strong></td>
+                <td><span class="badge badge-down">▼ −72%</span></td>
             </tr>
             <tr>
                 <td><strong>PerplexityBot</strong></td>
-                <td>&lt;1%</td><td>&lt;1%</td>
-                <td>—</td><td>~18,100</td>
-                <td><span class="badge badge-new">New</span></td>
+                <td>&lt;1%</td><td>&lt;1%</td><td><strong>0.02%</strong></td>
+                <td><span class="badge badge-new">Minimal</span></td>
             </tr>
         </tbody>
     </table>
@@ -379,12 +379,12 @@
     <div class="stone stone-1"></div>
     <div class="stone stone-2"></div>
     <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-    <h2>Bandwidth: 87 GB → 206 GB</h2>
+    <h2>Bandwidth: 87 GB → 206 GB → 220 GB</h2>
     <div class="chart-wrap" style="height: calc(100vh - 250px);">
         <canvas id="bandwidthChart"></canvas>
     </div>
     <p style="font-size:0.85rem; opacity:0.7; margin-top:10px; z-index:1; position:relative;">
-        Bytespider alone consumed ~75 GB this month — nearly as much as the entire network used last month.
+        Bytespider alone consumed ~100 GB in Apr-May — more than the entire network used in the Feb-Mar baseline.
     </p>
 </div>
 
@@ -438,33 +438,33 @@
     <div class="stone stone-1"></div>
     <div class="stone stone-2"></div>
     <div class="logo"><div class="logo-icon"></div><span class="logo-text">Maastricht University</span></div>
-    <h2>What Changed &amp; Why It Matters</h2>
+    <h2>What Changed Over 3 Months</h2>
     <div class="change-row">
         <div class="change-icon">▲</div>
         <div class="text">
-            <div class="ctitle">2.5× Traffic Explosion in 30 Days</div>
-            <div class="cdesc">From 1.08M to 2.70M requests — AI indexing of UM web properties is accelerating rapidly. Infrastructure load, CDN costs, and rate-limiting policies should be reviewed.</div>
+            <div class="ctitle">2.6× Traffic Growth (Feb→May)</div>
+            <div class="cdesc">From 1.08M to 2.77M requests over 3 months. AI indexing of UM web properties continues accelerating. Infrastructure load and CDN costs require ongoing review.</div>
         </div>
     </div>
     <div class="change-row">
         <div class="change-icon">▲</div>
         <div class="text">
-            <div class="ctitle">Bytespider (TikTok) Surges to #1</div>
-            <div class="cdesc">Share jumped from 15.85% → 45.9% (+627% in absolute requests). TikTok is aggressively crawling UM assets — likely for training data. Consider robots.txt policy review.</div>
+            <div class="ctitle">Bytespider (TikTok/China) Now Dominates at 64%</div>
+            <div class="cdesc">Share exploded: 15.85% → 45.9% → <strong>64.2%</strong>. A Chinese company now harvests more UM content than all US companies combined. Data sovereignty implications are significant.</div>
         </div>
     </div>
     <div class="change-row">
         <div class="change-icon">▼</div>
         <div class="text">
-            <div class="ctitle">OAI-SearchBot Declines Significantly</div>
-            <div class="cdesc">Down from 11.33% → ~2.5% (−45% absolute). May indicate OpenAI has already indexed key UM content, or a shift in crawling strategy for ChatGPT Search.</div>
+            <div class="ctitle">OpenAI Collapsed: 55% → 9%</div>
+            <div class="cdesc">GPTBot + OAI-SearchBot combined fell from 55.68% (Feb-Mar) to just 8.81% (Apr-May). OpenAI may have completed initial indexing or shifted strategy entirely.</div>
         </div>
     </div>
     <div class="change-row">
         <div class="change-icon">⚠</div>
         <div class="text">
-            <div class="ctitle">Bandwidth Nearly Doubled</div>
-            <div class="cdesc">87 GB → 206 GB. Bot-driven bandwidth is now a measurable cost and performance factor. Asset-level crawling (JS/fonts) amplifies per-visit data transfer.</div>
+            <div class="ctitle">Bandwidth Trend: 87 → 206 → 220 GB</div>
+            <div class="cdesc">Sustained high bandwidth from bot traffic. Bytespider alone used ~100 GB in April — exceeding the entire Feb-Mar baseline.</div>
         </div>
     </div>
 </div>
@@ -544,11 +544,11 @@
             new Chart(document.getElementById('growthChart'), {
                 type: 'bar',
                 data: {
-                    labels: ['Feb 2 – Mar 2, 2026\n(Last Month)', 'Mar 9 – Apr 8, 2026\n(This Month)'],
+                    labels: ['Feb-Mar 2026', 'Mar-Apr 2026', 'Apr-May 2026'],
                     datasets: [{
                         label: 'Total AI Requests',
-                        data: [1076164, 2701312],
-                        backgroundColor: [BLAUW, PERZIK],
+                        data: [1076164, 2701312, 2774237],
+                        backgroundColor: [BLAUW, PERZIK, GEEL],
                         borderRadius: 16,
                         borderSkipped: false,
                     }]
@@ -578,7 +578,7 @@
                     responsive: true, maintainAspectRatio: false,
                     cutout: '58%',
                     plugins: {
-                        legend: { position: 'bottom', labels: { color: BLAUW, padding: 12, font: { size: 11 }, boxWidth: 14 } },
+                        legend: { position: 'bottom', labels: { color: BLAUW, padding: 8, font: { size: 10 }, boxWidth: 12 } },
                         tooltip: { callbacks: { label: ctx => ' ' + ctx.label + ': ' + ctx.parsed.toFixed(1) + '%' } }
                     }
                 }
@@ -591,6 +591,10 @@
                 pieOpts(['Bytespider 45.9%','GPTBot 29.69%','Googlebot 21.24%','OAI-SearchBot 2.5%','PerplexityBot <1%'],
                     [45.9,29.69,21.24,2.5,0.67],
                     [GEEL, PERZIK, KOBALT, MID, PISTACHE], '#003538'));
+            new Chart(document.getElementById('pieAprMay'),
+                pieOpts(['Bytespider 64.2%','Googlebot 26.97%','GPTBot 5.63%','OAI-SearchBot 3.18%','PerplexityBot 0.02%'],
+                    [64.2,26.97,5.63,3.18,0.02],
+                    [GEEL, KOBALT, PERZIK, MID, PISTACHE], '#003538'));
         }
 
         if (n === 6) {
@@ -599,10 +603,13 @@
                 data: {
                     labels: ['Bytespider\n(TikTok)', 'GPTBot\n(OpenAI)', 'Googlebot', 'OAI-SearchBot\n& Other'],
                     datasets: [
-                        { label: 'Last Month (GB)', data: [13,40,26,8],
+                        { label: 'Feb-Mar (GB)', data: [13,40,26,8],
+                          backgroundColor: 'rgba(190,221,247,0.5)', borderColor: BLAUW,
+                          borderWidth: 2, borderRadius: 10, borderSkipped: false },
+                        { label: 'Mar-Apr (GB)', data: [75,70,50,11],
                           backgroundColor: 'rgba(234,124,105,0.45)', borderColor: PERZIK,
                           borderWidth: 2, borderRadius: 10, borderSkipped: false },
-                        { label: 'This Month (GB)', data: [75,70,50,11],
+                        { label: 'Apr-May (GB)', data: [100,30,70,20],
                           backgroundColor: 'rgba(241,231,152,0.6)', borderColor: GEEL,
                           borderWidth: 2, borderRadius: 10, borderSkipped: false }
                     ]
@@ -615,7 +622,7 @@
                     },
                     scales: {
                         x: { grid, ticks: { color: PERZIK } },
-                        y: { grid, ticks: { color: MID, callback: v => v+' GB' }, max: 90 }
+                        y: { grid, ticks: { color: MID, callback: v => v+' GB' }, max: 120 }
                     }
                 }
             });
