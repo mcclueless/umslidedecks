@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Who Reads Our Website</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,600;0,700;0,800;1,400&display=swap">
+<style>
+:root{
+  /* UM brandbook Aug 2026 — H.4 Kleur */
+  --staal:#000831; --wit:#FCFCFC; --kobalt:#355BD0; --blush:#FFEDE9; --boter:#F1E798;
+  --ossen:#640322; --perzik:#EA7C69; --nacht:#003538; --zachtblauw:#BEDDF7;
+  --teal:#0F7564; --choco:#89361F; --pistache:#D9FFD6; --aarde:#510702; --zachtroze:#F9C4B8;
+  --ink:var(--staal); --muted:rgba(0,8,49,.64); --faint:rgba(0,8,49,.12); --hair:rgba(0,8,49,.2);
+  --ground:#E9EBF1;
+  /* series — one colour per bot, never re-assigned */
+  --c-byte:var(--perzik); --c-gpt:var(--kobalt); --c-google:var(--teal); --c-oai:var(--staal); --c-pplx:var(--choco);
+  --u:9.5px;
+  --font:"Open Sans","Aptos","Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--ground);color:var(--ink);font-family:var(--font);-webkit-font-smoothing:antialiased;padding-inline:16px;padding-block:16px 32px}
+.deck{display:flex;flex-direction:column;gap:16px;max-width:1280px;margin-inline:auto}
+.stage{display:flex;flex-direction:column;gap:16px}
+
+.slide{position:relative;background:var(--bg,var(--wit));color:var(--fg,var(--ink));border-radius:calc(var(--u)*2.5);padding:calc(var(--u)*4) calc(var(--u)*4.4);display:flex;flex-direction:column;gap:calc(var(--u)*2);overflow:hidden}
+.slide.dark{--muted:color-mix(in srgb,var(--fg) 78%,transparent);--faint:color-mix(in srgb,var(--fg) 18%,transparent);--hair:color-mix(in srgb,var(--fg) 30%,transparent)}
+.t-staal-wit{--bg:var(--staal);--fg:var(--wit)}
+.t-staal-boter{--bg:var(--staal);--fg:var(--boter)}
+.t-staal-zb{--bg:var(--staal);--fg:var(--zachtblauw)}
+.t-kobalt{--bg:var(--kobalt);--fg:var(--blush)}
+.t-ossen{--bg:var(--ossen);--fg:var(--perzik)}
+.t-nacht{--bg:var(--nacht);--fg:var(--zachtblauw)}
+.t-teal{--bg:var(--teal);--fg:var(--blush)}
+.t-choco{--bg:var(--choco);--fg:var(--pistache)}
+
+.eyebrow{font-size:calc(var(--u)*1.15);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0}
+h1,h2,h3,p{margin:0}
+h1{font-size:calc(var(--u)*6.2);line-height:1.02;font-weight:800;letter-spacing:-.025em;text-wrap:balance}
+h2{font-size:calc(var(--u)*3.1);line-height:1.12;font-weight:700;letter-spacing:-.015em;text-wrap:balance;max-width:30ch}
+h3{font-size:calc(var(--u)*1.7);font-weight:700;line-height:1.2}
+.lede{font-size:calc(var(--u)*1.75);line-height:1.45;max-width:58ch;color:var(--muted)}
+.body{font-size:calc(var(--u)*1.5);line-height:1.5;max-width:60ch}
+.note{font-size:calc(var(--u)*1.1);line-height:1.45;color:var(--muted);margin-top:auto}
+.head{display:flex;flex-direction:column;gap:calc(var(--u)*.9)}
+.num{font-variant-numeric:tabular-nums}
+strong{font-weight:700}
+
+/* title */
+.title-slide{justify-content:space-between}
+.title-slide .lede{color:var(--fg);opacity:.85}
+.rule{display:flex;gap:calc(var(--u)*.6);align-items:flex-end;height:calc(var(--u)*9)}
+.rule span{flex:1;border-radius:calc(var(--u)*.4) calc(var(--u)*.4) 0 0;background:var(--fg);opacity:.9}
+.meta-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:calc(var(--u)*1);font-size:calc(var(--u)*1.2);opacity:.8}
+
+/* statement */
+.statement{justify-content:center}
+.big{font-size:calc(var(--u)*14);font-weight:800;line-height:.9;letter-spacing:-.04em}
+.statement .body{font-size:calc(var(--u)*2.2);line-height:1.35;max-width:36ch}
+.statement .note{color:var(--fg);opacity:.8}
+
+/* chart slides */
+.chart{flex:1;min-height:0;position:relative}
+.chart svg{display:block;width:100%;height:100%}
+.chart text{fill:var(--ink);font-family:var(--font)}
+.chart .axis{fill:var(--muted);font-size:13px}
+.chart .lbl{font-size:14px;font-weight:600}
+.chart .val{font-size:15px;font-weight:700}
+.chart .grid{stroke:var(--faint);stroke-width:1}
+.chart .base{stroke:var(--hair);stroke-width:1}
+.chart .hit{fill:transparent;cursor:default}
+.split{flex:1;min-height:0;display:grid;grid-template-columns:1.55fr 1fr;gap:calc(var(--u)*3)}
+.split>div{display:flex;flex-direction:column;gap:calc(var(--u)*1);min-height:0}
+.split h3{font-size:calc(var(--u)*1.35)}
+
+.legend{display:flex;flex-wrap:wrap;gap:calc(var(--u)*.6) calc(var(--u)*2);font-size:calc(var(--u)*1.2);color:var(--ink)}
+.legend span{display:inline-flex;align-items:center;gap:calc(var(--u)*.6)}
+.legend i{width:calc(var(--u)*1.2);height:calc(var(--u)*1.2);border-radius:3px;display:inline-block}
+
+/* bot cards */
+.bots{display:grid;grid-template-columns:repeat(5,1fr);gap:calc(var(--u)*1.4);margin-block:auto}
+.bot{background:var(--ground);border-radius:calc(var(--u)*2.5);padding:calc(var(--u)*2.6) calc(var(--u)*2.2);min-height:calc(var(--u)*30);display:flex;flex-direction:column;gap:calc(var(--u)*.8)}
+.bot i{width:calc(var(--u)*2.6);height:calc(var(--u)*.7);border-radius:99px;display:block}
+.bot h3{font-size:calc(var(--u)*2.1)}
+.bot .who{font-size:calc(var(--u)*1.15);font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.bot p{font-size:calc(var(--u)*1.65);line-height:1.45}
+.kind{margin-top:auto;font-size:calc(var(--u)*1.25);font-weight:600;padding:calc(var(--u)*.3) calc(var(--u)*.9);border-radius:99px;background:var(--wit);align-self:flex-start}
+
+/* summary table */
+.tbl-wrap{flex:1;min-height:0;overflow:auto}
+table{width:100%;border-collapse:collapse;font-size:calc(var(--u)*1.25);font-variant-numeric:tabular-nums}
+th{font-size:calc(var(--u)*1.05);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;text-align:right;padding:calc(var(--u)*.7) calc(var(--u)*1);border-bottom:1px solid var(--hair);white-space:nowrap}
+td{padding:calc(var(--u)*.85) calc(var(--u)*1);text-align:right;border-bottom:1px solid var(--faint);white-space:nowrap}
+th:first-child,td:first-child{text-align:left}
+td:first-child{font-weight:700}
+tr.gap td{color:var(--muted);font-style:italic;font-weight:400}
+.chip{display:inline-block;min-width:5.2em;text-align:center;padding:calc(var(--u)*.15) calc(var(--u)*.7);border-radius:99px;font-weight:700;font-size:.92em}
+.up{background:var(--blush);color:var(--ossen)}
+.down{background:#E3F0EC;color:var(--nacht)}
+.dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;margin-right:.45em;vertical-align:.02em}
+
+/* takeaways */
+.takes{display:grid;grid-template-columns:repeat(2,1fr);gap:calc(var(--u)*1.4) calc(var(--u)*3);flex:1;align-content:center}
+.take{display:flex;flex-direction:column;gap:calc(var(--u)*.6);border-top:2px solid var(--hair);padding-top:calc(var(--u)*1.2)}
+.take h3{font-size:calc(var(--u)*1.9)}
+.take p{font-size:calc(var(--u)*1.4);line-height:1.45;opacity:.88}
+.ask{background:color-mix(in srgb,var(--fg) 12%,transparent);border-radius:calc(var(--u)*2);padding:calc(var(--u)*1.6) calc(var(--u)*2.2);font-size:calc(var(--u)*1.4);line-height:1.5}
+
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:calc(var(--u)*1.2) calc(var(--u)*3);font-size:calc(var(--u)*1.35);line-height:1.5}
+.facts dt{font-weight:700}
+.facts dd{margin:0 0 calc(var(--u)*.6);color:var(--muted)}
+
+.pageno{position:absolute;right:calc(var(--u)*3);bottom:calc(var(--u)*2.2);font-size:calc(var(--u)*1.05);color:var(--muted);font-variant-numeric:tabular-nums}
+.slide.dark .pageno{color:var(--fg);opacity:.7}
+
+/* tooltip */
+.tip{position:fixed;pointer-events:none;z-index:10;background:var(--staal);color:var(--wit);font:600 13px/1.4 var(--font);padding:8px 12px;border-radius:12px;max-width:260px;opacity:0;transition:opacity .12s;font-variant-numeric:tabular-nums}
+.tip.on{opacity:1}
+.tip b{font-weight:800}
+
+/* humans vs bots */
+.ratio{display:flex;gap:calc(var(--u)*2.4);flex-wrap:wrap;font-size:calc(var(--u)*1.2);color:var(--muted)}
+.ratio b{color:var(--ink)}
+.takes.six{grid-template-columns:repeat(3,1fr)}
+.take.key h3{color:var(--boter)}
+.takes.six .take h3{font-size:calc(var(--u)*2.1)}
+.takes.six .take p{font-size:calc(var(--u)*1.55)}
+.facts.eight{gap:calc(var(--u)*.4) calc(var(--u)*3);font-size:calc(var(--u)*1.25)}
+
+/* controls */
+.controls{display:none}
+button{font:inherit}
+
+/* phone / narrow: slides stack, charts scroll sideways */
+@media (max-width:899px), (max-height:499px){
+  .chart{overflow-x:auto;flex:none}
+  .chart svg{min-width:640px;height:auto}
+  .split{grid-template-columns:1fr}
+  .bots{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .takes,.facts{grid-template-columns:1fr}
+  .big{font-size:calc(var(--u)*9)}
+  h1{font-size:calc(var(--u)*4.4)}
+  h2{font-size:calc(var(--u)*2.5)}
+  .slide{padding:calc(var(--u)*2.6) calc(var(--u)*2.2) calc(var(--u)*4)}
+}
+
+/* presentation mode */
+@media (min-width:900px) and (min-height:500px){
+  body{padding:0;overflow:hidden}
+  .deck{height:100%;max-width:none;justify-content:center;align-items:center;gap:14px;padding:20px 24px 14px}
+  .stage{container-type:inline-size;width:min(calc(100vw - 48px), calc((100vh - 92px) * 16 / 9));aspect-ratio:16/9;display:block}
+  .stage{--u:calc(100cqw / 128)}
+  .slide{position:absolute;inset:0}
+  .stage{position:relative}
+  .slide:not(.active){display:none}
+  .controls{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);width:min(calc(100vw - 48px), calc((100vh - 92px) * 16 / 9))}
+  .controls button{border:0;background:var(--wit);color:var(--staal);border-radius:99px;padding:8px 16px;font-weight:600;cursor:pointer}
+  .controls button:hover{background:var(--zachtblauw)}
+  .controls button:focus-visible{outline:2px solid var(--kobalt);outline-offset:2px}
+  .controls .count{font-variant-numeric:tabular-nums;min-width:4.5em;text-align:center;font-weight:600;color:var(--staal)}
+  .controls .hint{margin-left:auto}
+  .progress{flex:1;display:flex;gap:4px}
+  .progress button{flex:1;height:6px;padding:0;border-radius:99px;background:rgba(0,8,49,.14)}
+  .progress button.on{background:var(--staal)}
+  .progress button:hover{background:var(--kobalt)}
+}
+@media (prefers-reduced-motion:no-preference){
+  .slide.active{animation:in .28s ease-out}
+  @keyframes in{from{opacity:.4}to{opacity:1}}
+}
+</style>
+
+<div class="deck">
+<main class="stage" id="stage">
+
+<!-- 1 -->
+<section class="slide dark t-staal-wit title-slide" data-label="Title">
+  <p class="eyebrow">Website traffic · maastrichtuniversity.nl</p>
+  <div class="head" style="gap:calc(var(--u)*2)">
+    <h1>Who is reading<br>our website?</h1>
+    <p class="lede">Real people versus automated bots from Google, OpenAI, Perplexity and ByteDance — how both changed month by month, December 2025 to August 2026.</p>
+  </div>
+  <div>
+    <div class="rule" id="titleBars" aria-hidden="true"></div>
+    <div class="meta-row" style="margin-top:calc(var(--u)*1.2)"><span>Server logs &amp; Google Analytics · 9 months</span><span>September 2026</span></div>
+  </div>
+</section>
+
+<!-- 2 -->
+<section class="slide" data-label="Meet the bots">
+  <div class="head">
+    <p class="eyebrow">Who we are counting</p>
+    <h2>Five automated readers visit our site every day</h2>
+    <p class="lede">A “bot” is a program that reads web pages automatically. None of these are human visitors — each one collects our content for a company’s search engine or AI. On the next slides we set them against the real people who visit our site.</p>
+  </div>
+  <div class="bots">
+    <div class="bot"><i style="background:var(--c-google)"></i><span class="who">Google</span><h3>Googlebot</h3><p>Reads our pages so they show up in Google Search.</p><span class="kind">Search</span></div>
+    <div class="bot"><i style="background:var(--c-gpt)"></i><span class="who">OpenAI</span><h3>GPTBot</h3><p>Collects text that can be used to train the models behind ChatGPT.</p><span class="kind">AI training</span></div>
+    <div class="bot"><i style="background:var(--c-oai)"></i><span class="who">OpenAI</span><h3>OAI-SearchBot</h3><p>Looks up pages so ChatGPT can link to them in its answers.</p><span class="kind">AI answers</span></div>
+    <div class="bot"><i style="background:var(--c-pplx)"></i><span class="who">Perplexity</span><h3>PerplexityBot</h3><p>Finds pages for the Perplexity AI answer engine.</p><span class="kind">AI answers</span></div>
+    <div class="bot"><i style="background:var(--c-byte)"></i><span class="who">ByteDance (TikTok)</span><h3>Bytespider</h3><p>Collects content for ByteDance’s own AI models.</p><span class="kind">AI training</span></div>
+  </div>
+</section>
+
+<!-- humans vs bots -->
+<section class="slide dark t-staal-boter statement" data-label="Bots vs people">
+  <p class="eyebrow">The key insight</p>
+  <p class="big num">9 in 10</p>
+  <p class="body">visits to our website in August came from bots, not people: <strong>3.8 million</strong> bot requests against <strong>366,000</strong> human visits. In December, bots were already 83% — in June they reached <strong>96%</strong>.</p>
+</section>
+
+<section class="slide" data-label="Share of traffic">
+  <div class="head">
+    <p class="eyebrow">Share of all traffic per month · bot requests vs human visits</p>
+    <h2>People have become a small slice of who visits our website</h2>
+  </div>
+  <div class="legend" id="lgMix"></div>
+  <div class="chart" id="chMix" role="img" aria-label="100 percent stacked bars comparing bot requests and human visits per month"></div>
+  <p class="note">A human visit (a “session”) usually loads several pages; a bot request is one file. Counted against human <em>page views</em> instead, bots were still 77% of traffic in August (55% in December). No bot export exists for January 2026.</p>
+</section>
+
+<section class="slide" data-label="Growth side by side">
+  <div class="head">
+    <p class="eyebrow">Change compared with December 2025 · bots and people side by side</p>
+    <h2>Since December, bot traffic is up 77% — human visits are down 17%</h2>
+  </div>
+  <div class="legend" id="lgIdx"></div>
+  <div class="chart" id="chIdx" role="img" aria-label="Line chart of bot requests and human visits, each compared with its December 2025 level"></div>
+  <p class="note">Both lines start at December’s level, so you can compare how fast each grew or shrank — not their size. There is no bot data for January 2026.</p>
+</section>
+
+<section class="slide" data-label="Real visitors per month">
+  <div class="head">
+    <p class="eyebrow">Real visitors · sessions per month (Google Analytics)</p>
+    <h2>Real visits peaked in January, halved in June, and are climbing back</h2>
+  </div>
+  <div class="chart" id="chHum" role="img" aria-label="Bar chart of human sessions per month"></div>
+  <p class="note">Labels under each bar show the change from the previous month. Busiest days of the whole period: 14 and 15 January (31,671 and 33,683 visits), around the 15 January application deadline for selective bachelor’s programmes.</p>
+</section>
+
+<section class="slide" data-label="Real visitors per day">
+  <div class="head">
+    <p class="eyebrow">Real visitors · sessions per day</p>
+    <h2>The June dip was a two-week drop — and the bots didn’t notice it</h2>
+    <p class="lede">From 15 to 29 June, visits fell from about 12,500 to about 2,800 a day. Bots kept coming at roughly 170,000 requests a day, so the site was online. This looks more like a gap in Google Analytics measurement than people staying away — worth checking with the web team.</p>
+  </div>
+  <div class="legend" id="lgHumDay"></div>
+  <div class="chart" id="chHumDay" role="img" aria-label="Line chart of human sessions per day with a seven-day average"></div>
+</section>
+
+<!-- 3 -->
+<section class="slide dark t-staal-boter statement" data-label="Headline">
+  <p class="eyebrow">Bots on their own</p>
+  <p class="big num">7.1 million</p>
+  <p class="body">bot requests in May 2026 — <strong>3.3 times</strong> December’s level. Bot traffic has eased since, but August’s 3.8 million is still <strong>77% above</strong> where we started.</p>
+</section>
+
+<!-- 4 -->
+<section class="slide" data-label="Monthly totals">
+  <div class="head">
+    <p class="eyebrow">Total bot requests per month</p>
+    <h2>Bot traffic climbed all spring, peaked in May, and has fallen three months in a row</h2>
+  </div>
+  <div class="chart" id="chTotals" role="img" aria-label="Bar chart of total bot requests per month"></div>
+  <p class="note">Labels under each bar show the change from the previous month. No bot export exists for January 2026, so February is compared with December.</p>
+</section>
+
+<!-- 5 -->
+<section class="slide" data-label="Day by day">
+  <div class="head">
+    <p class="eyebrow">Requests per day, by bot</p>
+    <h2>Day by day, the surge came from one bot — and it lasted months, not days</h2>
+  </div>
+  <div class="legend" id="lgDaily"></div>
+  <div class="chart" id="chDaily" role="img" aria-label="Stacked area chart of daily bot requests from December 2025 to August 2026"></div>
+  <p class="note">Busiest single day: 5 July 2026, with 379,933 requests. Grey band: January 2026, no data available.</p>
+</section>
+
+<!-- 6 -->
+<section class="slide" data-label="Who's visiting">
+  <div class="head">
+    <p class="eyebrow">Share of requests per month, by bot</p>
+    <h2>The mix flipped: Google made up 72% of bot visits in December — 11% in August</h2>
+  </div>
+  <div class="legend" id="lgShare"></div>
+  <div class="chart" id="chShare" role="img" aria-label="100 percent stacked bars of each bot's share of requests per month"></div>
+</section>
+
+<!-- 7 -->
+<section class="slide" data-label="Bytespider">
+  <div class="head">
+    <p class="eyebrow">Bytespider · ByteDance</p>
+    <h2>Bytespider went from zero to 6 million requests a month in just three months</h2>
+    <p class="lede">It first appeared in February. Since May it has dropped by two thirds — but it is still our single biggest visitor, at 52% of all bot traffic in August.</p>
+  </div>
+  <div class="chart" id="chByte" role="img" aria-label="Bar chart of Bytespider requests per month"></div>
+</section>
+
+<!-- 8 -->
+<section class="slide" data-label="GPTBot">
+  <div class="head">
+    <p class="eyebrow">GPTBot · OpenAI</p>
+    <h2>GPTBot went quiet for three months — then came back busier than ever</h2>
+    <p class="lede">From mid-April to mid-July it made almost no requests. From 19 July it ran at up to 70,000 a day, making August its biggest month: 1.3 million requests. In the last week of August it slowed down again.</p>
+  </div>
+  <div class="chart" id="chGpt" role="img" aria-label="Line chart of GPTBot requests per day"></div>
+</section>
+
+<!-- 9 -->
+<section class="slide" data-label="Google, ChatGPT search, Perplexity">
+  <div class="head">
+    <p class="eyebrow">The other three</p>
+    <h2>Google swings, ChatGPT search holds steady, Perplexity is growing</h2>
+  </div>
+  <div class="chart" id="chTrio" role="img" aria-label="Three small bar charts: Googlebot, OAI-SearchBot and PerplexityBot requests per month"></div>
+  <p class="note">Each panel has its own scale — compare the shape of each trend, not the bar heights across panels. PerplexityBot: 12,359 in December → 49,248 in August, a fourfold rise.</p>
+</section>
+
+<!-- 10 -->
+<section class="slide" data-label="Data downloaded">
+  <div class="head">
+    <p class="eyebrow">Data sent to bots per month (gigabytes), by bot</p>
+    <h2>Bots now take 74% more data from our servers than in December</h2>
+  </div>
+  <div class="legend" id="lgGb"></div>
+  <div class="chart" id="chGb" role="img" aria-label="Stacked bar chart of gigabytes sent to each bot per month"></div>
+  <p class="note">Peak: 319 GB in July. In August GPTBot alone took 120 GB — more than any bot in any month except Bytespider in May, June and July.</p>
+</section>
+
+<!-- 11 -->
+<section class="slide" data-label="How the site answered">
+  <div class="head">
+    <p class="eyebrow">What happened to each request</p>
+    <h2>Almost one in five requests now ends in a redirect, up from one in fourteen</h2>
+  </div>
+  <div class="split">
+    <div>
+      <h3>Outcome of all bot requests, per month</h3>
+      <div class="legend" id="lgStatus"></div>
+      <div class="chart" id="chStatus" role="img" aria-label="100 percent stacked bars of request outcomes per month"></div>
+    </div>
+    <div>
+      <h3>Server errors per month</h3>
+      <div class="chart" id="chErr" role="img" aria-label="Bar chart of server errors per month"></div>
+      <p class="note" style="margin-top:0">July’s spike was a one-off: 45,497 of its 47,828 errors were answers to Googlebot. August was back to 711.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 12 -->
+<section class="slide" data-label="What bots asked for">
+  <div class="head">
+    <p class="eyebrow">What bots asked for</p>
+    <h2>In May and June, the 20 most-requested addresses were all code files — not pages people read</h2>
+    <p class="lede">By August the top 20 were real pages again, such as the Dutch homepage, search, and the Maastricht Graduate School of Law.</p>
+  </div>
+  <div class="split">
+    <div>
+      <h3>Share of top-20 requests that were code or style files</h3>
+      <div class="chart" id="chCode" role="img" aria-label="Bar chart of the share of top-20 requested addresses that were code files, per month"></div>
+    </div>
+    <div class="body" style="font-size:calc(var(--u)*1.35);gap:calc(var(--u)*1.4)">
+      <h3>Asking for pages that don’t exist</h3>
+      <p>Since February, Bytespider has topped the “page not found” list every month, repeatedly asking for files we never had — like <code>/files/sdk.min.js</code> and <code>/undefined</code>.</p>
+      <p>In August, visitors <em>calling themselves</em> Googlebot tried WordPress login pages (<code>wp-login.php</code>) — a pattern more typical of an impostor than of Google. Worth a check by IT.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 13 -->
+<section class="slide dark t-nacht statement" data-label="llms.txt">
+  <p class="eyebrow">llms.txt</p>
+  <p class="big num">2</p>
+  <p class="body">requests for <strong>llms.txt</strong> in eight months — both on 21 May. This small file is meant to tell AI tools what a website is about. So far, the bots simply aren’t asking for it.</p>
+</section>
+
+<!-- 14 -->
+<section class="slide" data-label="Month by month">
+  <div class="head">
+    <p class="eyebrow">Month by month</p>
+    <h2>All the numbers in one place</h2>
+  </div>
+  <div class="tbl-wrap"><table id="tbl"></table></div>
+</section>
+
+<!-- 15 -->
+<section class="slide dark t-staal-zb" data-label="Takeaways">
+  <div class="head">
+    <p class="eyebrow">What this means</p>
+    <h2>Six things to take away</h2>
+  </div>
+  <div class="takes six">
+    <div class="take key"><h3>Bots outnumber people</h3><p>In August, 91% of traffic was bots: about 10 bot requests for every human visit, up from 5 in December.</p></div>
+    <div class="take"><h3>People: down, then recovering</h3><p>Human visits peaked in January (634,000), fell to 227,000 in June and were back to 366,000 in August.</p></div>
+    <div class="take"><h3>Check the June numbers</h3><p>Visits collapsed for two weeks while bots carried on as usual — likely a measurement gap, not a real loss.</p></div>
+    <div class="take"><h3>AI now outweighs search</h3><p>In December, Google Search was most bot traffic. By August, nearly 9 in 10 bot requests came from AI companies.</p></div>
+    <div class="take"><h3>One bot drives the volume</h3><p>Bytespider caused the May peak and is still half of all bot traffic, often asking for code files and missing pages.</p></div>
+    <div class="take"><h3>OpenAI is back, and bigger</h3><p>GPTBot returned in late July and was the biggest bot by data volume in August. Bots take 74% more data than in December.</p></div>
+  </div>
+  <p class="ask"><strong>For discussion:</strong> Do we want to limit Bytespider? Do we want our content in AI answers (ChatGPT, Perplexity)? Should IT look into the August login-page probes? Can the web team confirm what happened to Google Analytics in late June?</p>
+</section>
+
+<!-- 16 -->
+<section class="slide" data-label="About the data">
+  <div class="head">
+    <p class="eyebrow">About the data</p>
+    <h2>Where these numbers come from</h2>
+  </div>
+  <dl class="facts eight">
+    <div><dt>Bot data</dt><dd>Monthly exports of the “AI traffic – Corporate application” dashboard: requests, data volume, response codes and addresses per bot. No export for January 2026.</dd></div>
+    <div><dt>Human data</dt><dd>Google Analytics (GA4) for maastrichtuniversity.nl: daily visits (sessions), users and page views, December 2025 – August 2026, January included.</dd></div>
+    <div><dt>Visits vs requests</dt><dd>“Bot share” compares bot requests with human sessions. A session usually contains several page views, so the share is also shown against page views.</dd></div>
+    <div><dt>Human visits are a floor</dt><dd>Google Analytics can miss people who block tracking or decline cookies, so the real number of people is likely somewhat higher.</dd></div>
+    <div><dt>June 15–29</dt><dd>Human visits dropped sharply while bot traffic stayed normal. Treat June’s human total with caution until the cause is known.</dd></div>
+    <div><dt>Month boundaries</dt><dd>Bot exports run from the 1st of the month to the 1st of the next, starting at slightly different times of day. Small overlaps don’t change the trends.</dd></div>
+    <div><dt>Top addresses</dt><dd>The bot dashboard lists only the 20 most-requested addresses per month; the code-file share is based on those.</dd></div>
+    <div><dt>Bot names</dt><dd>Bots identify themselves by name. A few may be impostors using a well-known name.</dd></div>
+  </dl>
+</section>
+
+</main>
+<nav class="controls" aria-label="Slide navigation">
+  <button id="prev" type="button" aria-label="Previous slide">← Prev</button>
+  <span class="count" id="count">1 / 21</span>
+  <button id="next" type="button" aria-label="Next slide">Next →</button>
+  <div class="progress" id="progress"></div>
+  <span class="hint">← → to navigate</span>
+</nav>
+</div>
+<div class="tip" id="tip" role="status"></div>
+
+<script>
+const DATA = [{"key":"2025-12","label":"Dec 2025","bots":{"Googlebot":1553338,"GPTBot":512474,"OAI-SearchBot":78138,"PerplexityBot":12359},"total":2156309,"gb":{"Googlebot":116.7,"GPTBot":38.6,"OAI-SearchBot":11.1,"PerplexityBot":1.3},"status":{"ok":1970939,"redirect":151146,"notfound":23153,"blocked":9789,"server":1110,"other":172},"llms":0,"code":37,"daily":[["2025-12-01",0,491,13113,742,428],["2025-12-02",0,13387,42686,1837,731],["2025-12-03",0,4062,30003,1421,447],["2025-12-04",0,15607,29535,3233,532],["2025-12-05",0,11013,25089,1760,476],["2025-12-06",0,1558,23552,1295,566],["2025-12-07",0,4136,117631,1716,465],["2025-12-08",0,9764,112000,2048,443],["2025-12-09",0,3072,118352,1566,455],["2025-12-10",0,15213,135513,3288,575],["2025-12-11",0,24144,111431,2721,651],["2025-12-12",0,2433,62041,1836,411],["2025-12-13",0,33,97267,1640,496],["2025-12-14",0,7937,68213,8019,499],["2025-12-15",0,10678,85360,5421,447],["2025-12-16",0,4476,132088,5460,351],["2025-12-17",0,3623,62723,4476,504],["2025-12-18",0,1341,35463,3402,486],["2025-12-19",0,835,38673,2595,481],["2025-12-20",0,4318,18111,1984,386],["2025-12-21",0,11220,10113,2711,683],["2025-12-22",0,85941,10038,3070,709],["2025-12-23",0,22143,20567,2139,485],["2025-12-24",0,78494,53126,1397,256],["2025-12-25",0,84259,11344,1371,347],["2025-12-26",0,54328,11722,1720,14],["2025-12-27",0,6013,15555,1328,1],["2025-12-28",0,15289,11023,2752,12],["2025-12-29",0,11922,8204,2042,5],["2025-12-30",0,2320,13788,1534,14],["2025-12-31",0,2403,14569,1155,2]]},{"key":"2026-02","label":"Feb 2026","bots":{"GPTBot":477642,"Googlebot":301034,"Bytespider":148783,"OAI-SearchBot":122547,"PerplexityBot":534},"total":1050540,"gb":{"GPTBot":43.0,"Googlebot":31.2,"OAI-SearchBot":13.9,"Bytespider":7.4,"PerplexityBot":0.2},"status":{"ok":883588,"redirect":139168,"notfound":17613,"blocked":9849,"server":275,"other":47},"llms":0,"code":26,"daily":[["2026-02-01",0,4303,2485,1091,9],["2026-02-02",0,15466,20902,2311,30],["2026-02-03",0,23232,9189,4023,15],["2026-02-04",0,21223,7731,11414,13],["2026-02-05",0,6593,7121,8026,10],["2026-02-06",0,8585,12168,4807,15],["2026-02-07",0,13208,9536,5813,9],["2026-02-08",0,10929,6507,9545,17],["2026-02-09",0,5679,7039,12175,14],["2026-02-10",85,13531,10902,7878,20],["2026-02-11",201,115137,14529,9346,18],["2026-02-12",280,82058,7726,6518,23],["2026-02-13",400,8595,8147,5079,18],["2026-02-14",123,38204,7965,3885,25],["2026-02-15",162,4492,9693,3866,24],["2026-02-16",143,909,9480,4753,22],["2026-02-17",296,14891,11363,9799,30],["2026-02-18",586,5688,9238,1519,34],["2026-02-19",170,405,12280,1092,16],["2026-02-20",464,924,8791,907,21],["2026-02-21",184,4856,15301,671,18],["2026-02-22",173,9101,26967,910,8],["2026-02-23",1872,6737,8743,830,27],["2026-02-24",25761,6635,11017,1595,16],["2026-02-25",27286,4706,11553,979,6],["2026-02-26",25963,4025,11746,1070,28],["2026-02-27",26766,1980,9439,1177,18],["2026-02-28",24121,22008,8424,1042,9]]},{"key":"2026-03","label":"Mar 2026","bots":{"Bytespider":1008593,"GPTBot":798290,"Googlebot":372115,"OAI-SearchBot":84962,"PerplexityBot":583},"total":2264543,"gb":{"GPTBot":75.7,"Bytespider":55.4,"Googlebot":41.0,"OAI-SearchBot":8.8,"PerplexityBot":0.2},"status":{"ok":1944520,"redirect":278785,"notfound":25203,"blocked":15083,"server":877,"other":75},"llms":0,"code":6,"daily":[["2026-03-01",11057,3579,5490,222,1],["2026-03-02",26952,14840,10610,1781,18],["2026-03-03",24975,12249,14609,975,29],["2026-03-04",25574,8341,13406,1097,30],["2026-03-05",23084,12870,17238,1081,39],["2026-03-06",21107,3918,11254,879,11],["2026-03-07",23534,3525,8428,759,28],["2026-03-08",23176,16632,7280,783,11],["2026-03-09",23762,5721,9074,1453,13],["2026-03-10",26877,19733,12444,1020,26],["2026-03-11",20867,25521,9159,1009,13],["2026-03-12",22459,11046,9927,27977,18],["2026-03-13",22285,6251,11408,7563,27],["2026-03-14",25624,5544,13247,3369,9],["2026-03-15",46292,34578,15240,3306,8],["2026-03-16",49813,44936,21166,4395,28],["2026-03-17",25052,43953,15106,3285,21],["2026-03-18",22149,28798,7879,2759,10],["2026-03-19",21946,20126,8060,1866,13],["2026-03-20",46239,12807,8994,1808,22],["2026-03-21",70990,7340,10449,1261,8],["2026-03-22",73674,17729,7942,1396,3],["2026-03-23",70580,16220,8201,2023,18],["2026-03-24",46182,61955,7897,1703,19],["2026-03-25",30780,45280,11691,1770,31],["2026-03-26",31077,54231,11309,2157,22],["2026-03-27",28678,31130,22499,1103,21],["2026-03-28",29641,70358,25577,876,21],["2026-03-29",27829,58866,13119,981,13],["2026-03-30",28066,46809,7535,2096,15],["2026-03-31",25315,39301,8633,1751,25]]},{"key":"2026-04","label":"Apr 2026","bots":{"Bytespider":1773541,"Googlebot":748509,"GPTBot":142126,"OAI-SearchBot":87781,"PerplexityBot":591},"total":2752548,"gb":{"Bytespider":100.7,"Googlebot":75.5,"GPTBot":14.8,"OAI-SearchBot":10.2,"PerplexityBot":0.2},"status":{"ok":2599822,"redirect":108848,"notfound":30691,"blocked":11516,"server":1604,"other":67},"llms":0,"code":97,"daily":[["2026-04-01",9340,0,3542,900,5],["2026-04-02",33273,8333,176141,1320,14],["2026-04-03",58862,30658,45516,984,15],["2026-04-04",82412,14911,9968,819,12],["2026-04-05",70665,7713,14269,714,18],["2026-04-06",49513,0,21116,970,14],["2026-04-07",78835,13908,16388,1456,19],["2026-04-08",87052,39742,11363,1562,29],["2026-04-09",75507,4180,18070,1423,10],["2026-04-10",79828,410,11639,1113,15],["2026-04-11",51455,20403,7238,1150,10],["2026-04-12",43595,62,7382,861,8],["2026-04-13",42126,0,6301,1481,10],["2026-04-14",44084,0,7746,1046,27],["2026-04-15",53304,0,8322,9158,26],["2026-04-16",71363,561,11177,16957,16],["2026-04-17",71919,15,15362,5670,36],["2026-04-18",65284,1,24879,4040,23],["2026-04-19",47937,0,15892,4018,13],["2026-04-20",61274,0,10370,3453,51],["2026-04-21",62609,2,8508,3065,33],["2026-04-22",52785,55,7566,6676,10],["2026-04-23",40187,1054,11261,5676,22],["2026-04-24",51405,33,14035,4058,13],["2026-04-25",59155,1,13923,1637,25],["2026-04-26",33058,54,8527,1357,22],["2026-04-27",59878,2,18334,728,23],["2026-04-28",89517,11,47825,1825,21],["2026-04-29",50624,6,76137,1106,18],["2026-04-30",66684,7,66509,1640,22]]},{"key":"2026-05","label":"May 2026","bots":{"Bytespider":5995077,"Googlebot":993451,"OAI-SearchBot":103949,"PerplexityBot":18108,"GPTBot":318},"total":7110903,"gb":{"Bytespider":179.2,"Googlebot":98.1,"OAI-SearchBot":18.0,"PerplexityBot":3.3,"GPTBot":0.0},"status":{"ok":6197200,"redirect":869318,"notfound":33762,"blocked":10328,"server":249,"other":46},"llms":2,"code":100,"daily":[["2026-05-01",24262,6,23174,257,4],["2026-05-02",140171,7,43494,413,9],["2026-05-03",114629,1,45412,365,8],["2026-05-04",76282,0,54873,307,16],["2026-05-05",168923,1,118995,301,19],["2026-05-06",96174,3,65273,1074,32],["2026-05-07",138759,7,64843,974,21],["2026-05-08",221412,3,55918,170,24],["2026-05-09",288326,73,27204,85,2],["2026-05-10",238158,14,43619,182,19],["2026-05-11",272735,0,44196,226,9],["2026-05-12",302349,5,51795,669,15],["2026-05-13",288870,1,56026,2561,15],["2026-05-14",252151,6,57591,1956,13],["2026-05-15",75727,0,30695,1264,4],["2026-05-16",0,0,0,0,0],["2026-05-17",0,0,0,0,0],["2026-05-18",0,0,0,0,0],["2026-05-19",151938,13,42921,472,16],["2026-05-20",340718,11,36172,694,24],["2026-05-21",310759,28,21621,823,1665],["2026-05-22",258280,34,14074,38021,1824],["2026-05-23",203381,28,11003,3380,1891],["2026-05-24",188613,19,12311,7576,1332],["2026-05-25",219115,1,11783,9920,1722],["2026-05-26",228355,16,11005,3708,1304],["2026-05-27",259997,5,10425,2799,1760],["2026-05-28",278663,1,10995,8187,1845],["2026-05-29",245036,0,7502,11410,1532],["2026-05-30",332506,0,7650,2242,390],["2026-05-31",216587,35,8264,2506,2338]]},{"key":"2026-06","label":"Jun 2026","bots":{"Bytespider":4599077,"Googlebot":350983,"OAI-SearchBot":108974,"PerplexityBot":13867,"GPTBot":564},"total":5073465,"gb":{"Bytespider":169.9,"Googlebot":44.1,"OAI-SearchBot":18.7,"PerplexityBot":2.9,"GPTBot":0.1},"status":{"ok":4214382,"redirect":809852,"notfound":34656,"blocked":12041,"server":2360,"other":174},"llms":0,"code":100,"daily":[["2026-06-01",132854,58,6005,1890,381],["2026-06-02",253919,43,13387,2143,632],["2026-06-03",189759,13,16851,1545,541],["2026-06-04",39023,38,12384,1811,487],["2026-06-05",165509,35,8296,1607,411],["2026-06-06",229667,8,11892,4666,343],["2026-06-07",158765,0,11489,4262,346],["2026-06-08",157973,2,8669,4006,352],["2026-06-09",114982,0,9753,3896,302],["2026-06-10",123189,11,7260,2922,169],["2026-06-11",103205,15,11406,2859,136],["2026-06-12",97865,2,11476,3379,179],["2026-06-13",110896,0,14085,2390,315],["2026-06-14",132763,33,17625,1920,270],["2026-06-15",148913,4,12085,2792,223],["2026-06-16",214778,20,10871,3961,234],["2026-06-17",163399,0,9883,4598,233],["2026-06-18",143921,0,8607,4345,225],["2026-06-19",134259,90,9681,3169,251],["2026-06-20",67592,3,8538,1877,161],["2026-06-21",153968,1,10120,4715,280],["2026-06-22",219057,101,14465,5336,163],["2026-06-23",104402,1,31504,5407,281],["2026-06-24",89177,7,9914,4089,161],["2026-06-25",171887,3,9967,5424,179],["2026-06-26",185069,18,14994,3448,404],["2026-06-27",192788,7,7779,3268,353],["2026-06-28",190987,2,5716,4975,198],["2026-06-29",137370,10,8212,4246,181],["2026-06-30",159069,20,8361,3974,3176]]},{"key":"2026-07","label":"Jul 2026","bots":{"Bytespider":2837121,"Googlebot":820633,"GPTBot":770550,"OAI-SearchBot":75516,"PerplexityBot":38153},"total":4541973,"gb":{"Bytespider":152.5,"Googlebot":77.5,"GPTBot":73.2,"OAI-SearchBot":10.1,"PerplexityBot":5.2},"status":{"ok":3543884,"redirect":887980,"server":47828,"notfound":34936,"blocked":17930,"other":9415},"llms":0,"code":63,"daily":[["2026-07-01",66080,19,6455,3211,1253],["2026-07-02",180480,37,13795,4267,2188],["2026-07-03",150884,28,19746,2806,2561],["2026-07-04",91322,5,102810,2618,2172],["2026-07-05",173644,16,196733,5176,4364],["2026-07-06",113664,20,54354,3773,2042],["2026-07-07",93551,94,104863,3479,1686],["2026-07-08",90485,563,58207,4506,1407],["2026-07-09",88734,7104,8068,5182,1586],["2026-07-10",93904,203,9896,1899,1288],["2026-07-11",92137,352,9135,2011,1566],["2026-07-12",86172,575,9570,1754,1499],["2026-07-13",76798,179,13034,2105,1152],["2026-07-14",85301,140,10976,1775,1510],["2026-07-15",80543,821,13605,2778,838],["2026-07-16",64853,1018,15332,2411,1126],["2026-07-17",79159,166,15576,1331,798],["2026-07-18",96439,6992,15673,1668,535],["2026-07-19",80193,75824,13764,1426,632],["2026-07-20",76494,20796,13361,1880,790],["2026-07-21",87097,68379,9914,2274,895],["2026-07-22",74548,69669,11245,1569,675],["2026-07-23",82428,65401,10214,2813,795],["2026-07-24",66751,72096,9903,1986,1088],["2026-07-25",79361,65621,11537,1019,994],["2026-07-26",96488,65645,10145,1913,319],["2026-07-27",96061,69891,8601,869,531],["2026-07-28",89800,69139,11317,2840,218],["2026-07-29",90694,69030,14652,2042,633],["2026-07-30",87143,14776,13161,1558,609],["2026-07-31",25913,25951,4991,577,403]]},{"key":"2026-08","label":"Aug 2026","bots":{"Bytespider":1974112,"GPTBot":1300693,"Googlebot":413036,"OAI-SearchBot":76236,"PerplexityBot":49248},"total":3813325,"gb":{"GPTBot":120.3,"Bytespider":111.9,"Googlebot":44.9,"OAI-SearchBot":8.1,"PerplexityBot":6.0},"status":{"ok":3070404,"redirect":694672,"notfound":29002,"blocked":17012,"other":1524,"server":711},"llms":0,"code":0,"daily":[["2026-08-01",46551,189,5111,848,793],["2026-08-02",61969,64671,12680,1748,875],["2026-08-03",68855,54581,9790,1606,1511],["2026-08-04",87858,54484,11083,1710,1774],["2026-08-05",67375,64812,13539,16610,1590],["2026-08-06",51437,62285,13975,1587,1079],["2026-08-07",50154,65092,21707,1444,1304],["2026-08-08",91145,67152,20197,1217,983],["2026-08-09",102246,64783,17235,864,1821],["2026-08-10",65951,68156,18561,1642,1586],["2026-08-11",67711,66158,16248,1035,1154],["2026-08-12",58124,7644,14974,2353,1074],["2026-08-13",46931,41875,13412,2890,1840],["2026-08-14",44620,19536,13460,1363,1645],["2026-08-15",43120,15919,6067,4514,1685],["2026-08-16",29555,55083,6349,1079,1816],["2026-08-17",35401,66093,9959,1812,1709],["2026-08-18",82029,68854,10832,2961,2067],["2026-08-19",58783,72620,17120,3246,1938],["2026-08-20",13153,71762,45309,2341,2078],["2026-08-21",137260,72462,24083,2760,1711],["2026-08-22",104127,72547,12237,2039,1578],["2026-08-23",64252,36241,8210,2174,1829],["2026-08-24",65513,4991,8160,2073,2112],["2026-08-25",78326,2414,9345,2162,1804],["2026-08-26",10048,2400,13155,1438,1809],["2026-08-27",96248,8188,8503,3077,1489],["2026-08-28",54283,10587,8683,2122,2167],["2026-08-29",55653,16824,12850,2188,2017],["2026-08-30",91428,13500,7634,2129,1866],["2026-08-31",44006,8790,2568,1204,544]]}];
+const HUMAN = {"2026-04":{"total":{"activeUsers":312532.0,"sessions":456247.0,"screenPageViews":1668302.0,"newUsers":141409.0,"engagementRate":0.6379,"avgSessionDurationSec":329.7},"daily":[["2026-04-01",17307,12266,62137],["2026-04-02",18307,13098,60191],["2026-04-03",10164,7223,36569],["2026-04-04",7465,5209,26917],["2026-04-05",7914,5564,29324],["2026-04-06",10440,7238,39121],["2026-04-07",15608,10839,54644],["2026-04-08",15145,10602,54192],["2026-04-09",15542,11086,53209],["2026-04-10",15568,10542,57591],["2026-04-11",9300,6522,34365],["2026-04-12",9941,7059,35857],["2026-04-13",17923,12417,61833],["2026-04-14",19446,13172,67535],["2026-04-15",25714,16771,108464],["2026-04-16",20121,13781,74137],["2026-04-17",16388,11189,56338],["2026-04-18",10425,7297,37983],["2026-04-19",11761,8196,43336],["2026-04-20",20342,13894,70163],["2026-04-21",21187,14291,76521],["2026-04-22",19950,13588,69331],["2026-04-23",18083,12350,63177],["2026-04-24",15042,10538,52867],["2026-04-25",8797,6011,32797],["2026-04-26",9904,6639,40108],["2026-04-27",11950,7984,48382],["2026-04-28",18356,12236,67842],["2026-04-29",18779,12558,75433],["2026-04-30",19378,12372,77938]]},"2026-08":{"total":{"activeUsers":257220.0,"sessions":365580.0,"screenPageViews":1151511.0,"newUsers":122826.0,"engagementRate":0.6518,"avgSessionDurationSec":296.8},"daily":[["2026-08-01",6037,4281,20830],["2026-08-02",7665,5832,28764],["2026-08-03",10459,7504,37771],["2026-08-04",10245,7295,36433],["2026-08-05",10869,7675,33782],["2026-08-06",10178,7334,34056],["2026-08-07",8924,6475,29606],["2026-08-08",6649,4906,22579],["2026-08-09",6956,5008,24167],["2026-08-10",11192,7979,38328],["2026-08-11",11569,8292,38687],["2026-08-12",10649,7388,34396],["2026-08-13",13667,9590,42282],["2026-08-14",11531,8197,37355],["2026-08-15",7674,5622,26528],["2026-08-16",8345,6039,27353],["2026-08-17",13925,9641,48751],["2026-08-18",13458,9338,43656],["2026-08-19",12895,8964,41239],["2026-08-20",13559,9570,43227],["2026-08-21",11977,8287,37762],["2026-08-22",8909,6273,28141],["2026-08-23",10144,7294,30793],["2026-08-24",17646,11938,52189],["2026-08-25",16748,11707,49429],["2026-08-26",16373,11140,47172],["2026-08-27",15747,10853,46078],["2026-08-28",14023,9779,40610],["2026-08-29",9743,7009,29193],["2026-08-30",13256,9575,36395],["2026-08-31",24568,16435,63959]]},"2025-12":{"total":{"activeUsers":305257.0,"sessions":442448.0,"screenPageViews":1749210.0,"newUsers":153671.0,"engagementRate":0.6517,"avgSessionDurationSec":347.1},"daily":[["2025-12-01",21773,15017,87645],["2025-12-02",21059,14217,82034],["2025-12-03",20489,14340,82654],["2025-12-04",18136,12430,73917],["2025-12-05",16427,11060,64385],["2025-12-06",11086,7830,47140],["2025-12-07",12745,8437,54997],["2025-12-08",20505,13996,83304],["2025-12-09",21417,15078,75969],["2025-12-10",20607,13952,74053],["2025-12-11",18739,13061,66109],["2025-12-12",14964,10661,54451],["2025-12-13",9638,6679,37204],["2025-12-14",10844,7820,44798],["2025-12-15",18193,12334,69732],["2025-12-16",17431,11698,66725],["2025-12-17",17154,11714,67901],["2025-12-18",16075,10959,62060],["2025-12-19",13788,9439,55533],["2025-12-20",8809,6281,38050],["2025-12-21",9319,6601,39159],["2025-12-22",15746,10946,57372],["2025-12-23",12717,8635,49135],["2025-12-24",8881,6149,35548],["2025-12-25",7816,5493,31191],["2025-12-26",9291,6614,39521],["2025-12-27",9302,6250,38432],["2025-12-28",9718,6793,43583],["2025-12-29",11802,8085,51862],["2025-12-30",10362,7294,43695],["2025-12-31",7615,5394,31051]]},"2026-02":{"total":{"activeUsers":309257.0,"sessions":456608.0,"screenPageViews":1672832.0,"newUsers":141884.0,"engagementRate":0.6439,"avgSessionDurationSec":328.9},"daily":[["2026-02-01",14357,9739,53988],["2026-02-02",22451,15368,81737],["2026-02-03",21107,14375,76183],["2026-02-04",20193,13550,72619],["2026-02-05",20265,13918,69874],["2026-02-06",19553,13164,63466],["2026-02-07",17410,10255,58640],["2026-02-08",11544,8091,44650],["2026-02-09",20314,13940,74014],["2026-02-10",20492,13927,72794],["2026-02-11",18903,13005,66821],["2026-02-12",17654,12104,62489],["2026-02-13",14369,9919,49164],["2026-02-14",8076,5700,30137],["2026-02-15",8906,6122,34761],["2026-02-16",12018,8443,46758],["2026-02-17",12067,8427,47899],["2026-02-18",13974,9549,52094],["2026-02-19",14879,10503,55505],["2026-02-20",13493,9376,52678],["2026-02-21",10250,7132,39418],["2026-02-22",12253,8638,46239],["2026-02-23",20593,14058,75533],["2026-02-24",21478,14635,81520],["2026-02-25",18768,12441,71453],["2026-02-26",18937,12641,69190],["2026-02-27",17283,11303,63111],["2026-02-28",15021,8934,60097]]},"2026-01":{"total":{"activeUsers":425068.0,"sessions":633806.0,"screenPageViews":2643749.0,"newUsers":199637.0,"engagementRate":0.6579,"avgSessionDurationSec":364.6},"daily":[["2026-01-01",8097,5929,33899],["2026-01-02",12572,8830,55491],["2026-01-03",11836,8335,52158],["2026-01-04",14322,10237,66575],["2026-01-05",23143,16030,97575],["2026-01-06",23034,16053,98820],["2026-01-07",23234,15434,99303],["2026-01-08",23565,15971,96095],["2026-01-09",21033,14347,83633],["2026-01-10",15016,10456,70913],["2026-01-11",17777,11913,84171],["2026-01-12",29304,18985,127355],["2026-01-13",29792,18864,133968],["2026-01-14",31671,19280,163871],["2026-01-15",33683,20208,176900],["2026-01-16",23472,15140,94784],["2026-01-17",13298,9268,55150],["2026-01-18",14143,10060,56857],["2026-01-19",24376,16492,89474],["2026-01-20",24391,16521,89189],["2026-01-21",23334,15810,90113],["2026-01-22",22703,15554,84308],["2026-01-23",20775,14056,71631],["2026-01-24",12598,8908,48917],["2026-01-25",13766,9683,54102],["2026-01-26",22666,15251,85384],["2026-01-27",23284,15566,87228],["2026-01-28",22974,15596,92439],["2026-01-29",21745,14444,80649],["2026-01-30",18603,12728,68769],["2026-01-31",13599,9119,54028]]},"2026-07":{"total":{"activeUsers":218346.0,"sessions":311156.0,"screenPageViews":1020197.0,"newUsers":102374.0,"engagementRate":0.6589,"avgSessionDurationSec":321.8},"daily":[["2026-07-01",12204,8694,39626],["2026-07-02",14743,10296,47827],["2026-07-03",10950,7785,35602],["2026-07-04",6760,4819,20955],["2026-07-05",7302,5168,25257],["2026-07-06",13105,8860,41867],["2026-07-07",13234,9279,43230],["2026-07-08",12050,8427,38895],["2026-07-09",12330,8536,37808],["2026-07-10",10187,7057,32333],["2026-07-11",6398,4703,22226],["2026-07-12",6767,4809,23546],["2026-07-13",12253,8506,41301],["2026-07-14",12021,8418,40365],["2026-07-15",12728,9008,43122],["2026-07-16",12346,8417,37710],["2026-07-17",9049,6230,28958],["2026-07-18",6120,4290,20537],["2026-07-19",5797,4054,19194],["2026-07-20",9302,6547,30824],["2026-07-21",10359,7304,35975],["2026-07-22",10413,7239,35433],["2026-07-23",10100,7019,32755],["2026-07-24",8646,6003,28395],["2026-07-25",5802,4113,18771],["2026-07-26",6176,4419,20232],["2026-07-27",12381,8936,37959],["2026-07-28",10778,7778,35177],["2026-07-29",11567,8112,40217],["2026-07-30",10632,7541,35415],["2026-07-31",8656,5979,28685]]},"2026-06":{"total":{"activeUsers":156104.0,"sessions":227453.0,"screenPageViews":722323.0,"newUsers":65800.0,"engagementRate":0.5817,"avgSessionDurationSec":300.6},"daily":[["2026-06-01",17580,11852,68678],["2026-06-02",16095,10688,50512],["2026-06-03",14762,9962,46121],["2026-06-04",14421,10062,45328],["2026-06-05",12844,8943,39533],["2026-06-06",7403,5318,24410],["2026-06-07",8718,6609,26693],["2026-06-08",14922,10140,47050],["2026-06-09",14486,10146,48319],["2026-06-10",14813,10497,48243],["2026-06-11",13491,9338,41779],["2026-06-12",11794,8367,36808],["2026-06-13",6967,5023,22405],["2026-06-14",7574,5452,25388],["2026-06-15",4948,3297,13495],["2026-06-16",3295,1991,9207],["2026-06-17",3157,1961,8835],["2026-06-18",3205,2125,8460],["2026-06-19",2971,1901,8091],["2026-06-20",1951,1311,5238],["2026-06-21",1907,1242,4782],["2026-06-22",3286,2136,9035],["2026-06-23",3027,1871,8648],["2026-06-24",2855,1800,8723],["2026-06-25",2597,1642,7859],["2026-06-26",2298,1446,7156],["2026-06-27",1501,937,4334],["2026-06-28",1494,952,4419],["2026-06-29",3366,2151,10436],["2026-06-30",9725,6944,32338]]},"2026-05":{"total":{"activeUsers":303665.0,"sessions":449690.0,"screenPageViews":1475156.0,"newUsers":127540.0,"engagementRate":0.6359,"avgSessionDurationSec":320.7},"daily":[["2026-05-01",16686,10920,64110],["2026-05-02",9573,6370,34396],["2026-05-03",9938,6912,35891],["2026-05-04",13892,9652,49060],["2026-05-05",13072,9094,45315],["2026-05-06",16578,11295,54527],["2026-05-07",16813,11627,57845],["2026-05-08",23918,15548,69098],["2026-05-09",12294,8262,34342],["2026-05-10",14163,9455,38777],["2026-05-11",27266,17096,73463],["2026-05-12",24880,15542,78737],["2026-05-13",18720,12213,59200],["2026-05-14",12539,8483,43598],["2026-05-15",10907,7636,37424],["2026-05-16",7691,5415,24704],["2026-05-17",9695,6721,33122],["2026-05-18",17257,11519,58064],["2026-05-19",17477,11788,58238],["2026-05-20",20941,14605,58818],["2026-05-21",16928,11868,51008],["2026-05-22",13089,9048,41226],["2026-05-23",7504,5346,24235],["2026-05-24",7784,5551,26101],["2026-05-25",10696,7490,36530],["2026-05-26",15815,10538,51382],["2026-05-27",15040,10396,52923],["2026-05-28",14632,10092,52425],["2026-05-29",13724,9460,51702],["2026-05-30",8824,5948,32878],["2026-05-31",11354,7775,46017]]},"2026-03":{"total":{"activeUsers":312794.0,"sessions":450268.0,"screenPageViews":1606405.0,"newUsers":144521.0,"engagementRate":0.638,"avgSessionDurationSec":317.7},"daily":[["2026-03-01",11795,7818,49617],["2026-03-02",17159,12276,64208],["2026-03-03",17408,12004,63431],["2026-03-04",16700,11612,58917],["2026-03-05",16378,10946,55752],["2026-03-06",12972,9242,47213],["2026-03-07",8419,5962,30134],["2026-03-08",9349,6634,33564],["2026-03-09",17374,11850,59639],["2026-03-10",17114,11901,60561],["2026-03-11",16600,11429,58223],["2026-03-12",15907,11171,55742],["2026-03-13",13637,9681,47845],["2026-03-14",8865,6491,33743],["2026-03-15",9710,7046,36002],["2026-03-16",16845,11742,61246],["2026-03-17",16994,11532,61055],["2026-03-18",16249,10831,56233],["2026-03-19",17568,12135,56890],["2026-03-20",13909,9828,45691],["2026-03-21",8871,6497,31789],["2026-03-22",10184,7389,37879],["2026-03-23",17814,12134,61432],["2026-03-24",17830,12274,63799],["2026-03-25",17243,11561,58593],["2026-03-26",19206,13212,62037],["2026-03-27",14299,10048,49246],["2026-03-28",9268,6635,35788],["2026-03-29",9972,6929,38469],["2026-03-30",17067,11926,65549],["2026-03-31",17562,12058,66118]]}};
+const C_HUMAN="#640322", C_BOTS="#000831";
+const BOTS = [
+  {k:"Bytespider", c:"var(--c-byte)", hex:"#EA7C69"},
+  {k:"GPTBot", c:"var(--c-gpt)", hex:"#355BD0"},
+  {k:"Googlebot", c:"var(--c-google)", hex:"#0F7564"},
+  {k:"OAI-SearchBot", c:"var(--c-oai)", hex:"#000831"},
+  {k:"PerplexityBot", c:"var(--c-pplx)", hex:"#89361F"},
+];
+const NS = "http://www.w3.org/2000/svg";
+const fmt = n => n.toLocaleString("en-GB");
+const short = n => n >= 1e6 ? (n/1e6).toFixed(n>=1e7?0:1).replace(/\.0$/,"")+"M" : n >= 1e3 ? Math.round(n/1e3)+"k" : String(n);
+const mon = m => m.label.slice(0,3);
+
+function el(tag, attrs={}, parent){ const e=document.createElementNS(NS,tag); for(const [a,v] of Object.entries(attrs)) e.setAttribute(a,v); if(parent) parent.appendChild(e); return e; }
+function svg(host, W, H){ const s=el("svg",{viewBox:`0 0 ${W} ${H}`,preserveAspectRatio:"xMidYMid meet"}); document.getElementById(host).appendChild(s); return s; }
+function txt(p, x, y, s, cls, anchor="middle", extra={}){ const t=el("text",{x,y,class:cls,"text-anchor":anchor,...extra},p); t.textContent=s; return t; }
+function niceMax(v){ const p=Math.pow(10,Math.floor(Math.log10(v))); for(const m of [1,1.2,1.5,2,2.5,3,4,5,6,8,10]) if(m*p>=v) return m*p; }
+function ticks(max,n){ if(!n){ n=[4,5,2,3].find(k=>{const st=max/k; return st>=1000?Number.isInteger(st/1000):Number.isInteger(st);})||4; } return Array.from({length:n+1},(_,i)=>max*i/n); }
+/* bar with rounded data-end, square at baseline */
+function barPath(x,y,w,h,r=4){ if(h<=0) return ""; r=Math.min(r,h,w/2); return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}Z`; }
+
+const tip = document.getElementById("tip");
+function hover(node, html){
+  node.addEventListener("pointermove", e=>{ tip.innerHTML=html; tip.classList.add("on");
+    const x=Math.min(e.clientX+14, innerWidth-tip.offsetWidth-8); tip.style.left=x+"px"; tip.style.top=(e.clientY+16)+"px"; });
+  node.addEventListener("pointerleave", ()=>tip.classList.remove("on"));
+}
+function legend(id, items){ document.getElementById(id).innerHTML = items.map(b=>`<span><i style="background:${b.c}"></i>${b.k}</span>`).join(""); }
+
+/* ---------- title bars: monthly totals as a quiet motif ---------- */
+(()=>{ const host=document.getElementById("titleBars"); const mx=Math.max(...DATA.map(d=>d.total));
+  DATA.forEach(d=>{ const s=document.createElement("span"); s.style.height=(d.total/mx*100)+"%"; host.appendChild(s); }); })();
+
+/* ---------- monthly totals ---------- */
+(()=>{ const W=1000,H=400,L=64,R=10,T=34,B=64; const s=svg("chTotals",W,H);
+  const max=niceMax(Math.max(...DATA.map(d=>d.total))); const y=v=>T+(H-T-B)*(1-v/max);
+  ticks(max).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,short(t),"axis","end"); });
+  const bw=(W-L-R)/DATA.length;
+  DATA.forEach((d,i)=>{ const x=L+i*bw+bw*.2, w=bw*.6, peak=d.key==="2026-05";
+    el("path",{d:barPath(x,y(d.total),w,y(0)-y(d.total)),fill:peak?"var(--kobalt)":"var(--zachtblauw)"},s);
+    txt(s,x+w/2,y(d.total)-10,short(d.total),"val");
+    txt(s,x+w/2,H-B+22,mon(d)+" "+d.key.slice(2,4),"lbl");
+    if(i){ const ch=(d.total/DATA[i-1].total-1)*100, up=ch>=0;
+      const g=el("g",{},s); el("rect",{x:x+w/2-34,y:H-B+33,width:68,height:22,rx:11,fill:up?"#FFEDE9":"#E3F0EC"},g);
+      txt(g,x+w/2,H-B+49,(up?"+":"−")+Math.abs(Math.round(ch))+"%","axis","middle",{style:`font-weight:700;fill:${up?"#640322":"#003538"}`}); }
+    const hit=el("rect",{x:L+i*bw,y:T,width:bw,height:H-T-B,class:"hit"},s);
+    hover(hit,`<b>${d.label}</b><br>${fmt(d.total)} requests`+(i?`<br>${(d.total/DATA[i-1].total-1>=0?"+":"")}${Math.round((d.total/DATA[i-1].total-1)*100)}% vs ${DATA[i-1].label}`:""));
+  });
+})();
+
+/* ---------- daily stacked area ---------- */
+(()=>{ legend("lgDaily",BOTS); const W=1000,H=380,L=64,R=10,T=14,B=34; const s=svg("chDaily",W,H);
+  const days=DATA.flatMap(d=>d.daily); const t0=Date.parse("2025-12-01"), t1=Date.parse("2026-09-01");
+  const x=ds=>L+(W-L-R)*(Date.parse(ds)-t0)/(t1-t0);
+  const tot=r=>r.slice(1).reduce((a,b)=>a+b,0);
+  const max=niceMax(Math.max(...days.map(tot))); const y=v=>T+(H-T-B)*(1-v/max);
+  el("rect",{x:x("2026-01-01"),y:T,width:x("2026-02-01")-x("2026-01-01"),height:H-T-B,fill:"rgba(0,8,49,.06)"},s);
+  txt(s,(x("2026-01-01")+x("2026-02-01"))/2,T+18,"no data","axis");
+  ticks(max).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,short(t),"axis","end"); });
+  ["2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"].forEach(m=>{
+    const mid=Date.parse(m+"-15"); txt(s,L+(W-L-R)*(mid-t0)/(t1-t0),H-10,new Date(m+"-15").toLocaleString("en-GB",{month:"short"}),"lbl"); });
+  // two segments: Dec, Feb–Aug
+  const segs=[days.filter(r=>r[0]<"2026-01-01"), days.filter(r=>r[0]>="2026-02-01")];
+  // draw in stacking order: Bytespider on bottom
+  segs.forEach(seg=>{ const acc=seg.map(()=>0);
+    BOTS.forEach((b,bi)=>{ const lo=[...acc]; seg.forEach((r,j)=>acc[j]+=r[bi+1]);
+      const top=seg.map((r,j)=>`${x(r[0]).toFixed(1)},${y(acc[j]).toFixed(1)}`); const bot=seg.map((r,j)=>`${x(r[0]).toFixed(1)},${y(lo[j]).toFixed(1)}`).reverse();
+      el("path",{d:"M"+top.join("L")+"L"+bot.join("L")+"Z",fill:b.hex,stroke:"#FCFCFC","stroke-width":.8,"stroke-linejoin":"round"},s); }); });
+  // crosshair
+  const cross=el("line",{y1:T,y2:H-B,stroke:"#000831","stroke-width":1,opacity:0},s);
+  const hit=el("rect",{x:L,y:T,width:W-L-R,height:H-T-B,class:"hit"},s);
+  hit.addEventListener("pointermove",e=>{ const pt=s.createSVGPoint(); pt.x=e.clientX; pt.y=e.clientY; const p=pt.matrixTransform(s.getScreenCTM().inverse());
+    const t=t0+(p.x-L)/(W-L-R)*(t1-t0); let best=null,bd=Infinity; days.forEach(r=>{ const dd=Math.abs(Date.parse(r[0])-t); if(dd<bd){bd=dd;best=r;} });
+    if(bd>86400000*1.5){ tip.classList.remove("on"); cross.setAttribute("opacity",0); return; }
+    cross.setAttribute("x1",x(best[0])); cross.setAttribute("x2",x(best[0])); cross.setAttribute("opacity",.5);
+    tip.innerHTML=`<b>${new Date(best[0]).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</b> · ${fmt(tot(best))}<br>`+BOTS.map((b,i)=>`<span class="dot" style="background:${b.hex}"></span>${b.k}: ${fmt(best[i+1])}`).join("<br>");
+    tip.classList.add("on"); tip.style.left=Math.min(e.clientX+14,innerWidth-tip.offsetWidth-8)+"px"; tip.style.top=(e.clientY+16)+"px"; });
+  hit.addEventListener("pointerleave",()=>{ tip.classList.remove("on"); cross.setAttribute("opacity",0); });
+})();
+
+/* ---------- 100% stacked (generic) ---------- */
+function stacked100(host, series, valueOf, H=380, labelMin=7, W=1000){
+  const L=48,R=10,T=8,B=34; const s=svg(host,W,H); const y=v=>T+(H-T-B)*(1-v);
+  [0,.25,.5,.75,1].forEach(t=>txt(s,L-10,y(t)+4,Math.round(t*100)+"%","axis","end"));
+  const bw=(W-L-R)/DATA.length;
+  DATA.forEach((d,i)=>{ const vals=series.map(se=>valueOf(d,se)); const tot=vals.reduce((a,b)=>a+b,0); let acc=0;
+    const x=L+i*bw+bw*.14, w=bw*.72;
+    series.forEach((se,j)=>{ const v=vals[j]; if(!v) return; const y0=y(acc/tot), y1=y((acc+v)/tot); acc+=v;
+      const h=Math.max(0,y0-y1-2); const r=el("rect",{x,y:y1+1,width:w,height:h,fill:se.hex,rx:2},s);
+      const pct=v/tot*100;
+      if(pct>=labelMin){ txt(s,x+w/2,y1+(y0-y1)/2+5,Math.round(pct)+"%","val","middle",{style:`fill:${se.ink||"#FCFCFC"}`}); }
+      hover(r,`<b>${d.label} · ${se.k}</b><br>${fmt(v)} (${pct.toFixed(1)}%)`); });
+    txt(s,x+w/2,H-10,mon(d)+" "+d.key.slice(2,4),"lbl"); });
+}
+legend("lgShare",BOTS);
+stacked100("chShare", BOTS.map(b=>({...b, ink: b.k==="Bytespider"?"#000831":"#FCFCFC"})), (d,b)=>d.bots[b.k]||0, 400);
+
+/* ---------- single-series monthly bars ---------- */
+function monthBars(host, get, color, {W=1000,H=360,peakKey=null,muted="#D9DCE6",L=64,labelFn=short,title=null,titleY=22}={}){
+  const R=10,T=title?46:30,B=34; const s=svg(host,W,H);
+  if(title) txt(s,L-50,titleY,title,"lbl","start",{style:"font-size:17px;font-weight:700"});
+  const vals=DATA.map(get); const max=niceMax(Math.max(...vals)||1); const y=v=>T+(H-T-B)*(1-v/max);
+  ticks(max,title?2:undefined).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,labelFn(t),"axis","end"); });
+  const bw=(W-L-R)/DATA.length;
+  DATA.forEach((d,i)=>{ const v=vals[i], x=L+i*bw+bw*.2, w=bw*.6;
+    el("path",{d:barPath(x,y(v),w,y(0)-y(v)),fill:(peakKey&&d.key!==peakKey)?muted:color},s);
+    txt(s,x+w/2,y(v)-9,labelFn(v),"val");
+    txt(s,x+w/2,H-10,mon(d),"lbl");
+    hover(el("rect",{x:L+i*bw,y:T-20,width:bw,height:H-T-B+20,class:"hit"},s),`<b>${d.label}</b><br>${fmt(v)}`); });
+  return s;
+}
+monthBars("chByte", d=>d.bots.Bytespider||0, "#EA7C69", {H:330});
+
+/* ---------- GPTBot daily ---------- */
+(()=>{ const W=1000,H=320,L=64,R=10,T=14,B=34; const s=svg("chGpt",W,H);
+  const days=DATA.flatMap(d=>d.daily); const t0=Date.parse("2025-12-01"), t1=Date.parse("2026-09-01");
+  const x=ds=>L+(W-L-R)*(Date.parse(ds)-t0)/(t1-t0);
+  const max=niceMax(Math.max(...days.map(r=>r[2]))); const y=v=>T+(H-T-B)*(1-v/max);
+  el("rect",{x:x("2026-01-01"),y:T,width:x("2026-02-01")-x("2026-01-01"),height:H-T-B,fill:"rgba(0,8,49,.06)"},s);
+  txt(s,(x("2026-01-01")+x("2026-02-01"))/2,T+18,"no data","axis");
+  el("rect",{x:x("2026-04-12"),y:T,width:x("2026-07-19")-x("2026-04-12"),height:H-T-B,fill:"#BEDDF7",opacity:.45},s);
+  txt(s,(x("2026-04-12")+x("2026-07-19"))/2,T+22,"Almost silent: 12 Apr – 18 Jul","lbl","middle",{style:"fill:#000831"});
+  ticks(max).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,short(t),"axis","end"); });
+  ["2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"].forEach(m=>txt(s,L+(W-L-R)*(Date.parse(m+"-15")-t0)/(t1-t0),H-10,new Date(m+"-15").toLocaleString("en-GB",{month:"short"}),"lbl"));
+  [days.filter(r=>r[0]<"2026-01-01"), days.filter(r=>r[0]>="2026-02-01")].forEach(seg=>{
+    const pts=seg.map(r=>`${x(r[0]).toFixed(1)},${y(r[2]).toFixed(1)}`);
+    el("path",{d:"M"+pts.join("L")+`L${x(seg.at(-1)[0])},${y(0)}L${x(seg[0][0])},${y(0)}Z`,fill:"#355BD0",opacity:.12},s);
+    el("path",{d:"M"+pts.join("L"),fill:"none",stroke:"#355BD0","stroke-width":2,"stroke-linejoin":"round"},s); });
+  days.forEach(r=>hover(el("rect",{x:x(r[0])-1.6,y:T,width:3.2,height:H-T-B,class:"hit"},s),`<b>${new Date(r[0]).toLocaleDateString("en-GB",{day:"numeric",month:"short",year:"numeric"})}</b><br>GPTBot: ${fmt(r[2])}`));
+})();
+
+/* ---------- trio small multiples ---------- */
+(()=>{ const host=document.getElementById("chTrio"); host.style.display="grid"; host.style.gridTemplateColumns="repeat(3,minmax(0,1fr))"; host.style.gap="calc(var(--u)*2)";
+  [["Googlebot","#0F7564","Googlebot · Google Search"],["OAI-SearchBot","#000831","OAI-SearchBot · ChatGPT search"],["PerplexityBot","#89361F","PerplexityBot · Perplexity"]].forEach(([k,c,t],i)=>{
+    const d=document.createElement("div"); d.id="trio"+i; d.style.minHeight="0"; host.appendChild(d);
+    monthBars(d.id, m=>m.bots[k]||0, c, {W:420,H:340,L:56,title:t,labelFn:v=>v>=1e6?(v/1e6).toFixed(1)+"M":v>=1e3?Math.round(v/1e3)+"k":String(v)});
+  });
+  // compact the axis/value text for narrow panels
+  host.querySelectorAll(".val").forEach(n=>n.style.fontSize="13px"); host.querySelectorAll(".lbl:not([text-anchor=start])").forEach(n=>n.style.fontSize="12px");
+})();
+
+/* ---------- GB stacked ---------- */
+(()=>{ legend("lgGb",BOTS); const W=1000,H=360,L=64,R=10,T=30,B=34; const s=svg("chGb",W,H);
+  const tot=d=>Object.values(d.gb).reduce((a,b)=>a+b,0); const max=niceMax(Math.max(...DATA.map(tot))); const y=v=>T+(H-T-B)*(1-v/max);
+  ticks(max).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,t+" GB","axis","end"); });
+  const bw=(W-L-R)/DATA.length;
+  DATA.forEach((d,i)=>{ const x=L+i*bw+bw*.2, w=bw*.6; let acc=0; const n=BOTS.filter(b=>d.gb[b.k]>0).length; let drawn=0;
+    BOTS.forEach(b=>{ const v=d.gb[b.k]||0; if(!v) return; drawn++; const y0=y(acc), y1=y(acc+v); acc+=v; const h=Math.max(0,y0-y1-(drawn<n?2:0));
+      const node=el("path",{d: drawn===n? barPath(x,y1,w,y0-y1): `M${x},${y1+(y0-y1-h)}h${w}v${h}h${-w}Z`,fill:b.hex},s);
+      hover(node,`<b>${d.label} · ${b.k}</b><br>${fmt(v)} GB`); });
+    txt(s,x+w/2,y(acc)-9,Math.round(acc)+" GB","val"); txt(s,x+w/2,H-10,mon(d)+" "+d.key.slice(2,4),"lbl"); });
+})();
+
+/* ---------- status ---------- */
+const STATUS=[
+  {k:"Delivered",key:"ok",hex:"#0F7564",c:"#0F7564"},
+  {k:"Redirected",key:"redirect",hex:"#BEDDF7",c:"#BEDDF7",ink:"#000831"},
+  {k:"Not found",key:"notfound",hex:"#EA7C69",c:"#EA7C69",ink:"#000831"},
+  {k:"Blocked or error",key:"rest",hex:"#640322",c:"#640322"},
+];
+legend("lgStatus",STATUS);
+stacked100("chStatus", STATUS, (d,se)=> se.key==="rest" ? (d.status.blocked||0)+(d.status.server||0)+(d.status.other||0) : (d.status[se.key]||0), 440, 6, 640);
+monthBars("chErr", d=>d.status.server||0, "#640322", {W:520,H:420,L:60,peakKey:"2026-07"});
+document.querySelectorAll("#chErr .val").forEach(n=>n.style.fontSize="13px");
+document.querySelectorAll("#chStatus .lbl, #chErr .lbl").forEach(n=>n.style.fontSize="13px");
+
+/* ---------- code share ---------- */
+monthBars("chCode", d=>d.code, "#89361F", {W:620,H:360,L:56,labelFn:v=>Math.round(v)+"%"});
+document.querySelectorAll("#chCode .lbl").forEach(n=>n.style.fontSize="13px");
+
+
+/* ---------- humans vs bots ---------- */
+const HM = ["2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"].map(k=>{
+  const b=DATA.find(d=>d.key===k); const h=HUMAN[k].total;
+  return {key:k, label:new Date(k+"-15").toLocaleString("en-GB",{month:"short",year:"numeric"}), bots:b?b.total:null, sess:h.sessions, pv:h.screenPageViews, users:h.activeUsers};
+});
+const monShort = k => new Date(k+"-15").toLocaleString("en-GB",{month:"short"});
+const TWO=[{k:"Bot requests",c:C_BOTS,hex:C_BOTS},{k:"Human visits",c:C_HUMAN,hex:C_HUMAN}];
+
+/* share of traffic */
+(()=>{ legend("lgMix",TWO); const W=1000,H=420,L=48,R=10,T=8,B=74; const s=svg("chMix",W,H); const y=v=>T+(H-T-B)*(1-v);
+  [0,.25,.5,.75,1].forEach(t=>{ txt(s,L-10,y(t)+4,Math.round(t*100)+"%","axis","end"); });
+  const bw=(W-L-R)/HM.length;
+  HM.forEach((d,i)=>{ const x=L+i*bw+bw*.16, w=bw*.68;
+    txt(s,x+w/2,H-B+22,monShort(d.key)+" "+d.key.slice(2,4),"lbl");
+    if(d.bots===null){
+      el("rect",{x,y:T+1,width:w,height:H-T-B-2,rx:6,fill:"none",stroke:"rgba(0,8,49,.3)","stroke-dasharray":"5 5"},s);
+      txt(s,x+w/2,y(.55),"no bot","axis"); txt(s,x+w/2,y(.55)+17,"data","axis");
+      txt(s,x+w/2,H-B+50,"—","axis"); return; }
+    const tot=d.bots+d.sess, pb=d.bots/tot;
+    const rb=el("rect",{x,y:y(pb)+1,width:w,height:y(0)-y(pb)-1,fill:C_BOTS,rx:2},s);
+    const rh=el("rect",{x,y:y(1),width:w,height:Math.max(0,y(pb)-y(1)-1),fill:C_HUMAN,rx:2},s);
+    txt(s,x+w/2,y(pb/2)+5,Math.round(pb*100)+"%","val","middle",{style:"fill:#FCFCFC"});
+    if(1-pb>=.1) txt(s,x+w/2,y(pb+(1-pb)/2)+5,Math.round((1-pb)*100)+"%","val","middle",{style:"fill:#FCFCFC"});
+    const g=el("g",{},s); el("rect",{x:x+w/2-40,y:H-B+34,width:80,height:24,rx:12,fill:"#E9EBF1"},g);
+    txt(g,x+w/2,H-B+51,(d.bots/d.sess).toFixed(1)+" : 1","axis","middle",{style:"font-weight:700;fill:#000831"});
+    const tipTxt=`<b>${d.label}</b><br>Bot requests: ${fmt(d.bots)} (${(pb*100).toFixed(1)}%)<br>Human visits: ${fmt(d.sess)} (${((1-pb)*100).toFixed(1)}%)<br>${(d.bots/d.sess).toFixed(1)} bot requests per human visit`;
+    hover(rb,tipTxt); hover(rh,tipTxt); });
+  txt(s,L-44,H-B+51,"per visit","axis","start",{style:"font-size:11px"});
+})();
+
+/* indexed side by side */
+(()=>{ legend("lgIdx",TWO); const W=1000,H=380,L=84,R=120,T=20,B=34; const s=svg("chIdx",W,H);
+  const b0=HM[0].bots, h0=HM[0].sess; const max=400; const y=v=>T+(H-T-B)*(1-v/max);
+  const bw=(W-L-R)/(HM.length-1); const x=i=>L+i*bw;
+  [0,100,200,300,400].forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s);
+    txt(s,L-12,y(t)+4,t===0?"0":t===100?"Dec level":(t/100)+"× Dec","axis","end"); });
+  el("line",{x1:L,x2:W-R,y1:y(100),y2:y(100),stroke:"#000831","stroke-opacity":.45,"stroke-dasharray":"4 4"},s);
+  HM.forEach((d,i)=>txt(s,x(i),H-10,monShort(d.key),"lbl"));
+  const pct=v=>{ const p=Math.round(v-100); return (p>=0?"+":"−")+Math.abs(p)+"%"; };
+  const series=[
+    {c:C_BOTS, name:"Bot requests", pts:HM.map((d,i)=>d.bots===null?null:[i,d.bots/b0*100,d]), labels:{5:"3.3×",8:null}},
+    {c:C_HUMAN, name:"Human visits", pts:HM.map((d,i)=>[i,d.sess/h0*100,d]), labels:{1:"+43%",6:"−49%",8:null}},
+  ];
+  series.forEach(se=>{
+    // draw with a gap for missing points
+    let seg=[]; const segs=[]; se.pts.forEach(p=>{ if(p) seg.push(p); else { if(seg.length) segs.push(seg); seg=[]; } }); if(seg.length) segs.push(seg);
+    segs.forEach(sg=>{ if(sg.length>1) el("path",{d:"M"+sg.map(p=>`${x(p[0])},${y(p[1])}`).join("L"),fill:"none",stroke:se.c,"stroke-width":2.5,"stroke-linejoin":"round"},s); });
+    // dashed bridge over the January gap for bots
+    const valid=se.pts.filter(Boolean); for(let i=1;i<valid.length;i++) if(valid[i][0]-valid[i-1][0]>1)
+      el("line",{x1:x(valid[i-1][0]),y1:y(valid[i-1][1]),x2:x(valid[i][0]),y2:y(valid[i][1]),stroke:se.c,"stroke-width":1.5,"stroke-dasharray":"3 5",opacity:.6},s);
+    valid.forEach(p=>{ const c=el("circle",{cx:x(p[0]),cy:y(p[1]),r:5,fill:se.c,stroke:"#FCFCFC","stroke-width":2},s);
+      if(se.labels[p[0]]) txt(s,x(p[0]),y(p[1])+(se.c===C_BOTS?-14:(p[1]>100?-14:24)),se.labels[p[0]],"val");
+      const raw=se.c===C_BOTS?p[2].bots:p[2].sess;
+      hover(el("circle",{cx:x(p[0]),cy:y(p[1]),r:16,class:"hit"},s),`<b>${p[2].label} · ${se.name}</b><br>${fmt(raw)}<br>${pct(p[1])} vs December`); });
+    const last=valid.at(-1); txt(s,x(last[0])+14,y(last[1])+5,se.name.split(" ")[0]+" "+pct(last[1]),"val","start",{style:`fill:${se.c}`});
+  });
+})();
+
+/* human sessions per month */
+(()=>{ const W=1000,H=400,L=64,R=10,T=34,B=64; const s=svg("chHum",W,H);
+  const max=niceMax(Math.max(...HM.map(d=>d.sess))); const y=v=>T+(H-T-B)*(1-v/max);
+  ticks(max).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,short(t),"axis","end"); });
+  const bw=(W-L-R)/HM.length;
+  HM.forEach((d,i)=>{ const x=L+i*bw+bw*.2, w=bw*.6, key=d.key==="2026-01"||d.key==="2026-06";
+    el("path",{d:barPath(x,y(d.sess),w,y(0)-y(d.sess)),fill:key?C_HUMAN:"#F9C4B8"},s);
+    txt(s,x+w/2,y(d.sess)-10,short(d.sess),"val");
+    if(d.key==="2026-01") txt(s,x+w/2,y(d.sess)-30,"Peak","axis","middle",{style:"font-weight:700;fill:#640322"});
+    if(d.key==="2026-06") txt(s,x+w/2,y(d.sess)-30,"Dip","axis","middle",{style:"font-weight:700;fill:#640322"});
+    txt(s,x+w/2,H-B+22,monShort(d.key)+" "+d.key.slice(2,4),"lbl");
+    if(i){ const ch=(d.sess/HM[i-1].sess-1)*100, up=ch>=0;
+      const g=el("g",{},s); el("rect",{x:x+w/2-34,y:H-B+33,width:68,height:22,rx:11,fill:up?"#E3F0EC":"#FFEDE9"},g);
+      txt(g,x+w/2,H-B+49,(up?"+":"−")+Math.abs(Math.round(ch))+"%","axis","middle",{style:`font-weight:700;fill:${up?"#003538":"#640322"}`}); }
+    hover(el("rect",{x:L+i*bw,y:T,width:bw,height:H-T-B,class:"hit"},s),`<b>${d.label}</b><br>${fmt(d.sess)} visits<br>${fmt(d.users)} users · ${fmt(d.pv)} page views`);
+  });
+})();
+
+/* human sessions per day */
+(()=>{ legend("lgHumDay",[{k:"Visits per day",c:"#F9C4B8"},{k:"7-day average",c:C_HUMAN}]);
+  const W=1000,H=330,L=64,R=10,T=14,B=34; const s=svg("chHumDay",W,H);
+  const days=Object.keys(HUMAN).sort().flatMap(k=>HUMAN[k].daily); const t0=Date.parse("2025-12-01"), t1=Date.parse("2026-09-01");
+  const x=ds=>L+(W-L-R)*(Date.parse(ds)-t0)/(t1-t0);
+  const max=niceMax(Math.max(...days.map(r=>r[1]))); const y=v=>T+(H-T-B)*(1-v/max);
+  el("rect",{x:x("2026-06-15"),y:T,width:x("2026-06-30")-x("2026-06-15"),height:H-T-B,fill:"#FFEDE9"},s);
+  ticks(max).forEach(t=>{ el("line",{x1:L,x2:W-R,y1:y(t),y2:y(t),class:t?"grid":"base"},s); txt(s,L-10,y(t)+4,short(t),"axis","end"); });
+  ["2025-12","2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"].forEach(m=>txt(s,L+(W-L-R)*(Date.parse(m+"-15")-t0)/(t1-t0),H-10,monShort(m),"lbl"));
+  el("path",{d:"M"+days.map(r=>`${x(r[0]).toFixed(1)},${y(r[1]).toFixed(1)}`).join("L"),fill:"none",stroke:"#F9C4B8","stroke-width":1.2,"stroke-linejoin":"round"},s);
+  const avg=days.map((r,i)=>{ const w=days.slice(Math.max(0,i-3),i+4); return [r[0], w.reduce((a,b)=>a+b[1],0)/w.length]; });
+  el("path",{d:"M"+avg.map(r=>`${x(r[0]).toFixed(1)},${y(r[1]).toFixed(1)}`).join("L"),fill:"none",stroke:C_HUMAN,"stroke-width":2.5,"stroke-linejoin":"round"},s);
+  const mark=(ds,v,label,dy,anchor="middle")=>{ el("circle",{cx:x(ds),cy:y(v),r:5,fill:C_HUMAN,stroke:"#FCFCFC","stroke-width":2},s); txt(s,x(ds)+(anchor==="end"?-8:0),y(v)+dy,label,"lbl",anchor); };
+  mark("2026-01-15",33683,"15 Jan: 33,683",-12);
+  mark("2026-06-28",1494,"",0); txt(s,x("2026-06-14")-6,y(2800)+5,"15–29 Jun: ~2,800 a day","lbl","end");
+  mark("2026-08-31",24568,"31 Aug: 24,568",5,"end");
+  days.forEach((r,i)=>hover(el("rect",{x:x(r[0])-1.8,y:T,width:3.6,height:H-T-B,class:"hit"},s),`<b>${new Date(r[0]).toLocaleDateString("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric"})}</b><br>${fmt(r[1])} visits<br>7-day average: ${fmt(Math.round(avg[i][1]))}`));
+})();
+
+/* ---------- table ---------- */
+(()=>{ const t=document.getElementById("tbl");
+  const chip=(cur,prev,human)=>{ if(prev==null||cur==null) return "—"; const ch=Math.round((cur/prev-1)*100); return `<span class="chip ${(ch>=0)!==!!human?"up":"down"}">${ch>=0?"+":"−"}${Math.abs(ch)}%</span>`; };
+  let h=`<thead><tr><th>Month</th><th>Human visits</th><th>vs prev.</th><th>Bot requests</th><th>vs prev.</th><th>Bot share</th><th>Bytespider</th><th>GPTBot</th><th>Googlebot</th><th>Data to bots</th></tr></thead><tbody>`;
+  HM.forEach((d,i)=>{ const b=DATA.find(x=>x.key===d.key); const prevB=[...HM.slice(0,i)].reverse().find(x=>x.bots!==null);
+    const hc=i?chip(d.sess,HM[i-1].sess,true):"—";
+    if(!b){ h+=`<tr><td>${d.label}</td><td>${fmt(d.sess)}</td><td>${hc}</td><td colspan="7" style="text-align:left;color:var(--muted);font-style:italic">No bot export available</td></tr>`; return; }
+    const gb=Object.values(b.gb).reduce((a,c)=>a+c,0);
+    h+=`<tr><td>${d.label}</td><td>${fmt(d.sess)}</td><td>${hc}</td><td>${fmt(d.bots)}</td><td>${prevB?chip(d.bots,prevB.bots):"—"}</td><td><b>${Math.round(d.bots/(d.bots+d.sess)*100)}%</b></td>`+
+      `<td>${fmt(b.bots.Bytespider||0)}</td><td>${fmt(b.bots.GPTBot||0)}</td><td>${fmt(b.bots.Googlebot||0)}</td><td>${Math.round(gb)} GB</td></tr>`; });
+  t.innerHTML=h+"</tbody>";
+})();
+
+/* ---------- navigation ---------- */
+(()=>{ const slides=[...document.querySelectorAll(".slide")]; const N=slides.length; let cur=0;
+  const prog=document.getElementById("progress");
+  slides.forEach((sl,i)=>{ const p=document.createElement("span"); p.className="pageno"; p.textContent=`${i+1} / ${N}`; sl.appendChild(p);
+    const b=document.createElement("button"); b.type="button"; b.setAttribute("aria-label",`Go to slide ${i+1}: ${sl.dataset.label}`); b.title=sl.dataset.label; b.onclick=()=>go(i); prog.appendChild(b); });
+  function go(i){ cur=Math.max(0,Math.min(N-1,i)); slides.forEach((s,j)=>s.classList.toggle("active",j===cur));
+    [...prog.children].forEach((b,j)=>b.classList.toggle("on",j<=cur));
+    document.getElementById("count").textContent=`${cur+1} / ${N}`; tip.classList.remove("on");
+    try{ history.replaceState(null,"","#"+(cur+1)); }catch(e){} }
+  document.getElementById("prev").onclick=()=>go(cur-1);
+  document.getElementById("next").onclick=()=>go(cur+1);
+  addEventListener("keydown",e=>{ if(["ArrowRight","PageDown"," "].includes(e.key)){e.preventDefault();go(cur+1);} if(["ArrowLeft","PageUp"].includes(e.key)){e.preventDefault();go(cur-1);} if(e.key==="Home")go(0); if(e.key==="End")go(N-1); });
+  const start=parseInt((location.hash||"").slice(1),10); go(Number.isFinite(start)?start-1:0);
+})();
+</script>
+
+</html>
